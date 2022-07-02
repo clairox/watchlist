@@ -1,12 +1,30 @@
 const router = require('express').Router();
 const passport = require('../auth/passport');
-const { pool } = require('../db');
+
+router.post('/signup', passport.authenticate('local-signup'), (req, res) => {
+    if (req.user) {
+        res.status(200).json(req.user);
+    }
+    else {
+        res.status(500).send();
+    }
+})
 
 router.post('/login', passport.authenticate('local-login'), (req, res) => {
-    const id = req.user.id;
-    pool.query('SELECT * FROM user_account WHERE id = $1', [id])
-    .then(users => res.status(200).send(users.rows[0]))
-    .catch(err => res.status(400).send());
+    if (req.user) {
+        res.status(200).json(req.user);
+    }
+    else {
+        res.status(500).send();
+    }
 });
+
+router.get('/logout', (req, res) => {
+    req.logout(() => {
+        req.session.destroy(err => {
+            res.clearCookie('connect.sid', { path: '/' }).status(200).send();
+        })
+}   );
+})
 
 module.exports = router;

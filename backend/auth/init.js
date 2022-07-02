@@ -1,5 +1,5 @@
 const passport = require('passport');
-const { pool } = require('../db');
+const { pgPool } = require('../db');
 
 module.exports = () => {
     passport.serializeUser((user, next) => {
@@ -7,7 +7,7 @@ module.exports = () => {
     });
 
     passport.deserializeUser((id, next) => {
-        pool.query(
+        pgPool.query(
             'SELECT * FROM user_account WHERE id = $1', 
             [id], 
             (err, user) => {
