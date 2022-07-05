@@ -6,6 +6,8 @@ import { HomePage } from './components/HomePage';
 import { PrivateRoute } from './components/PrivateRoute';
 import { SignupPage } from './components/SignupPage';
 import { Layout } from './components/Layout';
+import { ListsPage } from './components/ListsPage';
+import { FavoritesPage } from './components/FavoritesPage';
 
 function App() {
   //TODO: optimize for mobile
@@ -15,6 +17,8 @@ function App() {
         <Route element={<PrivateRoute/>}>
           <Route element={<Layout/>}>
             <Route index element={<HomePage/>}/>
+            <Route path='/lists' element={<ListsPage/>}/>
+            <Route path='/favorites' element={<FavoritesPage/>}/>
           </Route>
         </Route>
         <Route path='/login' element={<LoginPage/>} />
