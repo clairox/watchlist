@@ -25,14 +25,14 @@ export const Layout = () => {
                         <ul className='text-left text-[17px]'>
                             <li>
                                 <Link to='/lists'>
-                                    <div className='h-[46px] border-b-[1px] pl-5 border-gray-500 hover:border-inherit leading-[45px] hover:cursor-pointer'>
+                                    <div className='h-[46px] border-b-[1px] pl-5 border-gray-500 hover:border-inherit leading-[45px] hover:cursor-pointer' onClick={()=>setSideMenuOpen(false)}>
                                         Lists   
                                     </div>
                                 </Link>
                             </li>
                             <li>
                                 <Link to='/favorites'>
-                                    <div className='h-[46px] border-b-[1px] pl-5 border-gray-500 hover:border-inherit leading-[45px] hover:cursor-pointer'>
+                                    <div className='h-[46px] border-b-[1px] pl-5 border-gray-500 hover:border-inherit leading-[45px] hover:cursor-pointer' onClick={()=>setSideMenuOpen(false)}>
                                         Favorites   
                                     </div>
                                 </Link>

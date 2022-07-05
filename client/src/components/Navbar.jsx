@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../lib/authContext';
+import { useEffect } from 'react';
 
 export const Navbar = ({ setSideMenuOpen }) => {
     const { logout } = useAuth();
@@ -22,12 +23,12 @@ export const Navbar = ({ setSideMenuOpen }) => {
                     <div className='hidden lg:flex flex-row ml-14 leading-[60px]'>
                         <div>
                             <Link to='/lists'>
-                                <p className='text-md h-full'>Lists</p>
+                                <p className='text-md h-full' onClick={()=>setSideMenuOpen(false)}>Lists</p>
                             </Link>
                         </div>
                         <div className='ml-9'>
                             <Link to='/favorites'>
-                                <p className='text-md h-full'>Favorites</p>
+                                <p className='text-md h-full' onClick={()=>setSideMenuOpen(false)}>Favorites</p>
                             </Link>
                         </div>
                     </div>
