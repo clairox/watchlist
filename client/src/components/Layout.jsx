@@ -11,8 +11,8 @@ export const Layout = () => {
 
     return (
         <div>
-            <div onClick={()=>{if (sideMenuOpen) setSideMenuOpen(false)}}>
-                <div className={`bg-black w-[100%] h-[100%] z-40 fixed ${sideMenuOpen ? 'opacity-30 lg:hidden' : 'hidden'}`}/>
+            <div className='min-h-screen' onClick={()=>{if (sideMenuOpen) setSideMenuOpen(false)}}>
+                <div className={`bg-black w-full h-full z-40 fixed ${sideMenuOpen ? 'opacity-30 lg:hidden' : 'hidden'}`}/>
                 <div>
                     <Navbar sideMenuOpen={sideMenuOpen} setSideMenuOpen={setSideMenuOpen} />
                 </div>

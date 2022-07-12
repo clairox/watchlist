@@ -72,7 +72,7 @@ const useProvideAuth = () => {
         axios.get(`${apiPath}/user`, { withCredentials: true })
         .then(res => {
             if (res.data) {
-                setUser(res.data)
+                setUser(res.data);
                 localStorage.setItem('user', res.data);
             }
             else {

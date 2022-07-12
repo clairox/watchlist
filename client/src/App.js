@@ -10,7 +10,7 @@ import { ListsPage } from './components/ListsPage';
 import { FavoritesPage } from './components/FavoritesPage';
 
 function App() {
-  //TODO: optimize for mobile
+  
   return (
     <div className="App min-h-screen bg-gray-800">
       <Routes>
