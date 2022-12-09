@@ -12,7 +12,6 @@ export const HomePage = () => {
 
 	useEffect(() => {
 		if (user.id) {
-			alert(user.id)
 			axios
 				.get(`/watchlists/`, {
 					withCredentials: true,
