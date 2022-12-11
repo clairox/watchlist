@@ -9,6 +9,7 @@ import { Layout } from "./components/Layout";
 import { ListsPage } from "./components/ListsPage";
 import { FavoritesPage } from "./components/FavoritesPage";
 import { WatchlistPage } from "./components/WatchlistPage";
+import { ErrorPage } from "./components/ErrorPage";
 
 //TODO: write a README.md
 function App() {
