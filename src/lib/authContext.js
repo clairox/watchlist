@@ -48,7 +48,7 @@ const useProvideAuth = () => {
 	};
 
 	const logout = async () => {
-		return await axios.get(`${apiPath}/logout`, reqConfig).then(() => {
+		return await axios.post(`${apiPath}/logout`, reqConfig).then(() => {
 			setUser(null);
 			localStorage.removeItem("user");
 		});
