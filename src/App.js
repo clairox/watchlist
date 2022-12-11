@@ -9,9 +9,6 @@ import { Layout } from "./components/Layout";
 import { ListsPage } from "./components/ListsPage";
 import { FavoritesPage } from "./components/FavoritesPage";
 import { WatchlistPage } from "./components/WatchlistPage";
-import { BadRequestPage } from "./components/BadRequestPage";
-import { PageNotFoundPage } from "./components/PageNotFoundPage";
-import { InternalServerErrorPage } from "./components/InternalServerErrorPage";
 
 //TODO: write a README.md
 function App() {
@@ -28,9 +25,9 @@ function App() {
 				</Route>
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/signup" element={<SignupPage />} />
-				<Route path="/400" element={<BadRequestPage />} />
-				<Route path="/404" element={<PageNotFoundPage />} />
-				<Route path="/500" element={<InternalServerErrorPage />} />
+				<Route path="/400" element={<ErrorPage code={400} message={"Bad Request"} />} />
+				<Route path="/404" element={<ErrorPage code={404} message={"Page Not Found"} />} />
+				<Route path="/500" element={<ErrorPage code={500} message={"Internal Server Error"} />} />
 			</Routes>
 		</div>
 	);
