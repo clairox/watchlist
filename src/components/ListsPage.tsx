@@ -4,8 +4,14 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../lib/authContext";
+import { Watchlist } from "../../types";
 
-const Watchlist = ({ data, index }) => {
+type ItemProps = {
+	data: Watchlist;
+	index: number;
+}
+
+const WatchlistItem: React.FunctionComponent<ItemProps> = ({ data, index }) => {
 	const { name } = data;
 	return (
 		<div className="m-6 flex flex-col rounded-lg bg-gray-700 p-3 pl-6 text-left hover:bg-gray-600 ">
@@ -22,7 +28,7 @@ export const ListsPage = () => {
 	const { user } = useAuth();
 
 	useEffect(() => {
-		if (user.id) {
+		if (user?.id) {
 			axios
 				.get(`/watchlists/`, {
 					withCredentials: true,
@@ -31,14 +37,14 @@ export const ListsPage = () => {
 					setWatchlists(res.data);
 				});
 		}
-	}, [user.id]);
+	}, [user?.id]);
 
 	return (
 		<div>
 			<ul>
-				{watchlists.map((data, i) => (
+				{watchlists.map((data: Watchlist, i: number) => (
 					<Link to={`/lists/${data.id}`} key={i}>
-						<Watchlist data={data} index={i} />
+						<WatchlistItem data={data} index={i} />
 					</Link>
 				))}
 			</ul>

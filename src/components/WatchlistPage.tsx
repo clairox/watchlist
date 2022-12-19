@@ -9,8 +9,16 @@ import {
 	faLock,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { WatchlistItem as WI } from "../../types";
 
-const WatchlistItem = ({ data, inEditMode, deleteItem, setWatched }) => {
+type ItemProps = {
+	data: WI;
+	inEditMode: boolean;
+	deleteItem: (itemId: number) => void;
+	setWatched: (itemId: number) => void;
+}
+
+const WatchlistItem: React.FunctionComponent<ItemProps> = ({ data, inEditMode, deleteItem, setWatched }) => {
 	const { title, poster_url, release_date, watched } = data;
 
 	return (
@@ -54,7 +62,15 @@ const WatchlistItem = ({ data, inEditMode, deleteItem, setWatched }) => {
 	);
 };
 
-const Watchlist = React.memo((props) => {
+type WatchlistProps = {
+	watchlistItems: WI[];
+	deleteItem: (itemId: number) => void;
+	setWatched: (itemId: number) => void;
+	editMode: boolean;
+}
+
+//TODO: Stop page showing login every load
+const Watchlist = React.memo<WatchlistProps>((props) => {
 	const { watchlistItems, deleteItem, setWatched, editMode } = props;
 
 	return (
@@ -99,8 +115,8 @@ const Watchlist = React.memo((props) => {
 });
 
 //TODO: save media type to db and show in watchlist
-export const WatchlistPage = () => {
-	const [watchlistItems, setWatchlistItems] = useState([]);
+export const WatchlistPage: React.FunctionComponent = () => {
+	const [watchlistItems, setWatchlistItems] = useState<WI[]>([]);
 	const [watchlistName, setWatchlistName] = useState("");
 	const [_default, setDefault] = useState(false);
 	const [count, setCount] = useState(0);
@@ -111,7 +127,7 @@ export const WatchlistPage = () => {
 	const navigate = useNavigate();
 
 	const deleteItem = useCallback(
-		async (itemId) => {
+		async (itemId: number) => {
 			axios
 				.delete(`/watchlists/${id}/items/${itemId}`, {
 					withCredentials: true,
@@ -131,8 +147,11 @@ export const WatchlistPage = () => {
 	);
 
 	const setWatched = useCallback(
-		(itemId) => {
+		(itemId: number) => {
 			const item = watchlistItems.find((data) => data.id === itemId);
+
+			if (!item) return; 
+
 			axios
 				.patch(
 					`/watchlists/${id}/items/${itemId}/watched`,
@@ -213,7 +232,7 @@ export const WatchlistPage = () => {
 						<FontAwesomeIcon
 							className="relative right-5 pt-1 hover:cursor-pointer md:pt-2"
 							icon={faXmark}
-							size="xl"
+							size="lg"
 							color="white"
 							onClick={() => {
 								setEditedName("");
@@ -245,7 +264,7 @@ export const WatchlistPage = () => {
 					>
 						<FontAwesomeIcon
 							icon={faPencil}
-							size="xl"
+							size="lg"
 							onClick={() => setEditMode(!editMode)}
 						/>
 					</div>
@@ -258,7 +277,7 @@ export const WatchlistPage = () => {
 					>
 						<FontAwesomeIcon
 							icon={faTrashCan}
-							size="xl"
+							size="lg"
 							onClick={() => {
 								if (_default) return;
 

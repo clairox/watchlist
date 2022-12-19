@@ -4,14 +4,15 @@ import { useAuth } from "../lib/authContext";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { WatchlistPreviewSlider } from "./WatchlistPreviewSlider";
+import { Watchlist } from "../../types";
 
 export const HomePage = () => {
-	const [watchlists, setWatchlists] = useState([]);
+	const [watchlists, setWatchlists] = useState<Watchlist[]>([]);
 
 	const { user } = useAuth();
 
 	useEffect(() => {
-		if (user.id) {
+		if (user?.id) {
 			axios
 				.get(`/watchlists/`, {
 					withCredentials: true,
@@ -20,26 +21,32 @@ export const HomePage = () => {
 					setWatchlists(res.data);
 				});
 		}
-	}, [user.id]);
+	}, [user?.id]);
+
+	const sortWatchlists = (watchlists: Watchlist[]): Watchlist[] => {
+		return watchlists.sort((a: Watchlist, b: Watchlist) => {
+			const nameA = a.name.toUpperCase();
+			const nameB = b.name.toUpperCase();
+			if (nameA < nameB) {
+				return -1;
+			}
+			if (nameA > nameB) {
+				return 1;
+			}
+			return 0;
+		}).sort((a: Watchlist, b: Watchlist) => {
+			const aDefault = a.default ? 1 : 0;
+			const bDefault = b.default ? 1 : 0;
+			return bDefault - aDefault
+		})
+	}
 
 	//TODO: make watchlist image column which is equal to the most recently added poster or a custom image
 	return (
 		<div>
 			<ul>
-				{watchlists
-					.sort((a, b) => {
-						const nameA = a.name.toUpperCase();
-						const nameB = b.name.toUpperCase();
-						if (nameA < nameB) {
-							return -1;
-						}
-						if (nameA > nameB) {
-							return 1;
-						}
-						return 0;
-					})
-					.sort((a, b) => b.default - a.default)
-					.map((data, i) => (
+				{sortWatchlists(watchlists)
+					.map((data: Watchlist, i) => (
 						<WatchlistPreviewSlider data={data} key={data.id} />
 					))}
 			</ul>
@@ -59,7 +66,7 @@ export const HomePage = () => {
 						);
 				}}
 			>
-				<FontAwesomeIcon icon={faPlus} size="xl" color="white" />
+				<FontAwesomeIcon icon={faPlus} size="lg" color="white" />
 			</button>
 		</div>
 	);

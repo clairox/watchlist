@@ -1,6 +1,11 @@
 import React from "react";
 
-export const ErrorPage = ({ code, message }) => {
+type Props = {
+	code: number,
+	message: string
+}
+
+export const ErrorPage: React.FunctionComponent<Props> = ({ code, message }) => {
 	return (
 		<div className="h-screen bg-white">
 			<div className="mx-auto mt-[200px] flex flex-col justify-center">

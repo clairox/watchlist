@@ -1,12 +1,23 @@
 import axios from '../lib/axiosInstance';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { useAuth } from '../lib/authContext';
 import { faAngleLeft, faAngleRight, faLock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
+import { Watchlist } from '../../types';
 
-const WatchlistPreviewItem = React.memo(({ data, id }) => {
+type SliderItem = Watchlist & {
+	sliderItemId?: string;
+	hidden?: boolean;
+}
+
+type ItemProps = {
+	data: SliderItem;
+	id: string;
+}
+
+const WatchlistPreviewItem = React.memo<ItemProps>(({ data, id }) => {
 	let { poster_url, hidden } = data;
 
 	return (
@@ -16,8 +27,13 @@ const WatchlistPreviewItem = React.memo(({ data, id }) => {
 	);
 });
 
-export const WatchlistPreviewSlider = ({ data }) => {
-	const [watchlistItems, setWatchlistItems] = useState([]);
+type Slider = {
+	data: Watchlist;
+}
+
+export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }) => {
+
+	const [watchlistItems, setWatchlistItems] = useState<SliderItem[]>([]);
 	const [_default, setDefault] = useState(false);
 	const [count, setCount] = useState(0);
 	const [moveLeftHTML, setMoveLeftHTML] = useState(<></>);
@@ -28,7 +44,9 @@ export const WatchlistPreviewSlider = ({ data }) => {
 	const watchlistId = data.id;
 	const watchlistName = data.name;
 
-	const calculateWindowWidth = () => {
+	type WindowWidth = 4 | 6 | 7 | 9 | 10;
+
+	const calculateWindowWidth = (): WindowWidth => {
 		const w = window.innerWidth;
 		if (w < 768) {
 			return 4;
@@ -50,7 +68,7 @@ export const WatchlistPreviewSlider = ({ data }) => {
 
 	const { user } = useAuth();
 
-	const scrollableContainer = useRef(null);
+	const scrollableContainer: MutableRefObject<HTMLDivElement | null> = useRef(null);
 
 	const MAX_ITEM_COUNT = 50;
 
@@ -63,12 +81,12 @@ export const WatchlistPreviewSlider = ({ data }) => {
 
 		setMoveLeftHTML(
 			<span className="absolute left-0 z-10 flex h-full w-8 items-center justify-center bg-gradient-to-r from-black to-transparent hover:cursor-pointer">
-				<FontAwesomeIcon size="xl" icon={faAngleLeft} color="white" />
+				<FontAwesomeIcon size="lg" icon={faAngleLeft} color="white" />
 			</span>
 		);
 		setMoveRightHTML(
 			<span className="absolute right-0 z-10 flex h-full w-8 items-center justify-center bg-gradient-to-r from-transparent to-black hover:cursor-pointer">
-				<FontAwesomeIcon size="xl" icon={faAngleRight} color="white" />
+				<FontAwesomeIcon size="lg" icon={faAngleRight} color="white" />
 			</span>
 		);
 	};
@@ -80,14 +98,15 @@ export const WatchlistPreviewSlider = ({ data }) => {
 		setMoveRightHTML(<></>);
 	};
 
+
 	//TODO: make placeholder if images don't show or are loading or something
 	//TODO: make slider wrap
-	const getSliderItemIndex = item => parseInt(item.sliderItemId.split('-')[2]);
+	const getSliderItemIndex = (item: SliderItem) => parseInt(item.sliderItemId!.split('-')[2]);
 
-	const isDisplayableItem = item => !isNaN(parseInt(item.sliderItemId.split('-')[2]));
+	const isDisplayableItem = (item: SliderItem) => !isNaN(parseInt(item.sliderItemId!.split('-')[2]));
 
-	const prepareItemsForDisplay = items => {
-		items = items.map(item => {
+	const prepareItemsForDisplay = (items: SliderItem[]) => {
+		items = items.map((item: SliderItem) => {
 			if (isDisplayableItem(item)) {
 				item.hidden = false;
 			}
@@ -167,7 +186,7 @@ export const WatchlistPreviewSlider = ({ data }) => {
 	};
 
 	useEffect(() => {
-		const readyToTranslateLeft = items => {
+		const readyToTranslateLeft = (items: SliderItem[]) => {
 			const indexOfLastNumberedSliderItem = watchlistItems.findIndex(item => getSliderItemIndex(item) === numberOfItemSections - 1);
 
 			const moveBy = items.filter(item => !item.hidden && !isDisplayableItem(item)).length;
@@ -184,7 +203,7 @@ export const WatchlistPreviewSlider = ({ data }) => {
 			return true;
 		};
 
-		const readyToTranslateRight = items => {
+		const readyToTranslateRight = (items: SliderItem[]) => {
 			const indexOfFirstNumberedSliderItem = watchlistItems.findIndex(item => getSliderItemIndex(item) === 0);
 
 			const moveBy = items.filter(item => !item.hidden && !isDisplayableItem(item)).length;
@@ -201,7 +220,7 @@ export const WatchlistPreviewSlider = ({ data }) => {
 			return true;
 		};
 
-		const hidePreviousItems = items => {
+		const hidePreviousItems = (items: SliderItem[]) => {
 			const newItems = cloneDeep(items).map(item => {
 				if (!item.hidden && !isDisplayableItem(item)) {
 					item.hidden = true;
@@ -213,6 +232,8 @@ export const WatchlistPreviewSlider = ({ data }) => {
 		};
 
 		const sc = scrollableContainer.current;
+
+		if (!sc) return;
 
 		if (readyToTranslateLeft(watchlistItems)) {
 			const moveBy = watchlistItems.filter(item => !item.hidden && !isDisplayableItem(item)).length;
@@ -251,7 +272,7 @@ export const WatchlistPreviewSlider = ({ data }) => {
 		if (!watchlistItems.length) {
 			return;
 		}
-		const changeElementIdsByVisibility = newSections => {
+		const changeElementIdsByVisibility =  (newSections: WindowWidth) => {
 			const newItems = cloneDeep(watchlistItems);
 			let startIndex = 0;
 			let itemsLeft = 0;
@@ -292,7 +313,7 @@ export const WatchlistPreviewSlider = ({ data }) => {
 	}, [numberOfItemSections, watchlistItems, watchlistName]);
 
 	useEffect(() => {
-		if (user.id && !initialItemLoadComplete) {
+		if (user?.id && !initialItemLoadComplete) {
 			axios
 				.get(`/watchlists/${watchlistId}?populated=true&limit=${MAX_ITEM_COUNT}`, {
 					withCredentials: true,
@@ -301,7 +322,7 @@ export const WatchlistPreviewSlider = ({ data }) => {
 					setDefault(res.data.default);
 					let items = res.data.items;
 					setWatchlistItems(
-						items.map((item, i) => {
+						items.map((item: SliderItem, i: number) => {
 							const newItem = {
 								...item,
 								sliderItemId: 'slider-item-' + (i < numberOfItemSections ? i : ''),
@@ -316,7 +337,7 @@ export const WatchlistPreviewSlider = ({ data }) => {
 				})
 				.catch(err => console.error(err));
 		}
-	}, [user.id, initialItemLoadComplete, numberOfItemSections, watchlistId]);
+	}, [user?.id, initialItemLoadComplete, numberOfItemSections, watchlistId]);
 
 	return (
 		<div className="mt-4">
@@ -364,7 +385,7 @@ export const WatchlistPreviewSlider = ({ data }) => {
 				<ul className="no-scrollbar overflow-x-scroll whitespace-nowrap leading-[0]">
 					<div className="text-left" ref={scrollableContainer}>
 						{watchlistItems.map((data, i) => (
-							<WatchlistPreviewItem data={data} id={data.sliderItemId} key={data.id} />
+							<WatchlistPreviewItem data={data} id={data.sliderItemId!} key={data.id} />
 						))}
 					</div>
 				</ul>

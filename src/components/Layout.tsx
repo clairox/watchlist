@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { MutableRefObject, useRef, useState, ReactNode } from "react";
 import { Outlet } from "react-router";
 import { Navbar } from "./Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,15 +6,16 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { AddToListDialog } from "./AddToListDialog";
 import { useEffect } from "react";
+import { MovieData } from "../../types";
 
-export const Layout = () => {
+export const Layout: React.FunctionComponent = () => {
 	const [sideMenuOpen, setSideMenuOpen] = useState(false);
-	const [addToListDialog, setAddToListDialog] = useState(null);
+	const [addToListDialog, setAddToListDialog] = useState<ReactNode | null>(null);
 
-	const sideMenu = useRef(null);
-	const menuButton = useRef(null);
+	const sideMenu: MutableRefObject<HTMLDivElement | null> = useRef(null);
+	const menuButton: MutableRefObject<HTMLDivElement | null> = useRef(null);
 
-	const openAddToListDialog = (data) => {
+	const openAddToListDialog = (data: MovieData) => {
 		setAddToListDialog(
 			<div className="absolute z-50 mx-auto mt-32 flex w-full justify-center">
 				<AddToListDialog
@@ -36,8 +37,8 @@ export const Layout = () => {
 			}
 
 			if (
-				!sideMenu.current.contains(e.target) &&
-				!menuButton.current.contains(e.target)
+				!sideMenu.current.contains(e.target as HTMLElement) &&
+				!menuButton.current.contains(e.target as HTMLElement)
 			) {
 				setSideMenuOpen(false);
 			}
@@ -73,7 +74,7 @@ export const Layout = () => {
 					<div>
 						<FontAwesomeIcon
 							icon={faXmark}
-							size="xl"
+							size="lg"
 							className="float-right mr-5 mt-3 hover:cursor-pointer"
 							onClick={() => setSideMenuOpen(false)}
 						/>

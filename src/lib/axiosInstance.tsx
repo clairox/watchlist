@@ -5,6 +5,7 @@ const baseURL = process.env.REACT_APP_API_PATH;
 const axiosInstance = axios.create({ baseURL });
 
 axiosInstance.interceptors.response.use(
+	
 	(res) => res,
 	(err) => {
 		if (err.response.status === 409) return err;
@@ -14,7 +15,7 @@ axiosInstance.interceptors.response.use(
 				window.location.href = "/400";
 				break;
 			case 401:
-				useAuth().logout();
+				useAuth().logout!();
 				break;
 			case 404:
 				window.location.href = "/404";

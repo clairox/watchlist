@@ -12,7 +12,9 @@ export const LoginPage = () => {
 	const location = useLocation();
 
 	const { user, login } = useAuth() || {};
+	console.log(location?.state)
 
+	// @ts-ignore
 	const { from } = location?.state || { from: { pathname: "/" } };
 
 	useEffect(() => {
@@ -28,7 +30,17 @@ export const LoginPage = () => {
 				className="min-h-screen rounded bg-gray-700 px-8 pt-24 pb-8 shadow-sm lg:min-h-fit lg:pt-10"
 				onSubmit={(e) => {
 					e.preventDefault();
-					setInvalidLoginWarning();
+					if (!login) {
+						setInvalidLoginWarning(
+							<div className="mb-4 w-full rounded bg-red-500 p-1 px-5 text-white shadow-sm ">
+								<p>
+									Something went wrong. Please try again.
+								</p>
+							</div>
+						)
+						return
+					}
+					setInvalidLoginWarning(<></>);
 
 					login({ email, password }).then((res) => {
 						if (res.status === 401) {

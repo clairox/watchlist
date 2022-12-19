@@ -1,11 +1,18 @@
-import React, { useEffect } from "react";
+import React, { Dispatch, MutableRefObject, SetStateAction, useEffect } from "react";
 import { useState } from "react";
 import { searchMovie } from "../lib/tmdb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { useRef } from "react";
+import { MovieData } from "../../types";
 
-const ResultsItem = ({ item, openAddToListDialog, closeResults }) => {
+type ResultItemProps = {
+	item: {[key: string]: any};
+	openAddToListDialog: (data: MovieData) => void;
+	closeResults: () => void;
+}
+
+const ResultsItem: React.FunctionComponent<ResultItemProps> = ({ item, openAddToListDialog, closeResults }) => {
 	let {
 		id,
 		title,
@@ -62,7 +69,7 @@ const ResultsItem = ({ item, openAddToListDialog, closeResults }) => {
 							<FontAwesomeIcon
 								className="hover:cursor-pointer"
 								id="add-to-list-button"
-								size="2xl"
+								size="2x"
 								color="green"
 								icon={faCirclePlus}
 								onClick={(e) => {
@@ -84,14 +91,25 @@ const ResultsItem = ({ item, openAddToListDialog, closeResults }) => {
 	);
 };
 
-const SearchResults = ({
+type ResultsProps = {
+	searchResults: {[key: string]: any}[];
+	searchBarOpen: boolean;
+	setCanShowResults: Dispatch<SetStateAction<boolean>>;
+	openAddToListDialog: (data: MovieData) => void;
+	closeResults: () => void;
+}
+
+
+const SearchResults: React.FunctionComponent<ResultsProps> = ({
 	searchResults,
 	searchBarOpen,
+	setCanShowResults,
 	openAddToListDialog,
 	closeResults,
 }) => {
 	return (
 		<div
+			onBlur={()=>setCanShowResults(false)}
 			className={`mx-auto max-h-[750px] w-full overflow-auto bg-white sm:max-w-md lg:max-w-full xl:max-w-2xl ${
 				searchBarOpen ? "" : "hidden"
 			} sm:block`}
@@ -117,29 +135,36 @@ const SearchResults = ({
 	);
 };
 
-export const SearchBar = ({
+type SearchProps = {
+	searchBarOpen: boolean;
+	setSearchBarOpen: Dispatch<SetStateAction<boolean>>;
+	openAddToListDialog: (data: MovieData) => void;
+}
+
+export const SearchBar: React.FunctionComponent<SearchProps> = ({
 	searchBarOpen,
 	setSearchBarOpen,
 	openAddToListDialog,
 }) => {
 	const [searchText, setSearchText] = useState("");
-	const [searchResults, setSearchResults] = useState({});
+	const [searchResults, setSearchResults] = useState<{[key: string]: any}[]>([]);
 	const [canShowResults, setCanShowResults] = useState(false);
 
-	const searchBar = useRef(null);
-	const resultsContainer = useRef(null);
+	const searchBar: MutableRefObject<HTMLInputElement | null> = useRef(null);
+	const resultsContainer: MutableRefObject<HTMLDivElement | null> = useRef(null);
 
 	const closeResults = () => {
-		setSearchResults(null);
+		setSearchResults([]);
 	};
 
-	let searchDelayHandler = null;
+	let searchDelayHandler: any = null;
 
 	const searchResultsProps = {
-		searchBarOpen: searchBarOpen,
-		searchResults: searchResults,
-		openAddToListDialog: openAddToListDialog,
-		closeResults: closeResults,
+		searchBarOpen,
+		searchResults,
+		setCanShowResults,
+		openAddToListDialog,
+		closeResults,
 	};
 
 	useEffect(() => {
@@ -149,11 +174,11 @@ export const SearchBar = ({
 			}
 
 			if (
-				!searchBar.current.contains(e.target) &&
+				!searchBar.current.contains(e.target as HTMLElement) &&
 				resultsContainer.current &&
-				!resultsContainer.current.contains(e.target)
+				!resultsContainer.current.contains(e.target as HTMLElement)
 			) {
-				closeResults(false);
+				closeResults();
 			}
 		};
 	}, []);
@@ -169,12 +194,12 @@ export const SearchBar = ({
 				<div className="leading-[56px]">
 					<FontAwesomeIcon
 						icon={faXmark}
-						size="xl"
+						size="lg"
 						className="hover:cursor-pointer"
 						onClick={() => {
 							setSearchBarOpen(false);
 							setSearchText("");
-							setSearchResults(null);
+							setSearchResults([]);
 						}}
 					/>
 				</div>
@@ -202,8 +227,7 @@ export const SearchBar = ({
 							searchDelayHandler = setTimeout(async () => {
 								if (searchText.match(/^\s*$/)) return;
 								await searchMovie(searchText).then(
-									(results) => {
-										console.log(results);
+									(results: {[key: string]: any}[]) => {
 										setSearchResults(results);
 										setCanShowResults(true);
 									}
@@ -212,7 +236,7 @@ export const SearchBar = ({
 						}}
 						onKeyDown={(e) => {
 							if (searchText.length === 0) {
-								setSearchResults(null);
+								setSearchResults([]);
 							}
 						}}
 					/>
@@ -220,7 +244,6 @@ export const SearchBar = ({
 						<div ref={resultsContainer}>
 							<SearchResults
 								{...searchResultsProps}
-								onBlur={() => setCanShowResults(false)}
 							/>
 						</div>
 					)}

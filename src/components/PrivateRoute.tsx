@@ -9,7 +9,8 @@ export const PrivateRoute = () => {
 		<Outlet />
 	) : (
 		<Navigate
-			to={{ pathname: "/login", state: { from: location } }}
+			to={{ pathname: "/login"}}
+			state={{ from: location }}
 			replace
 		/>
 	);

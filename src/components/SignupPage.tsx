@@ -21,6 +21,7 @@ export const SignupPage = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
+	// @ts-ignore
 	const { from } = location?.state || { from: { pathname: "/" } };
 
 	const EMAIL_PATTERN =
@@ -38,7 +39,18 @@ export const SignupPage = () => {
 				className="min-h-screen rounded bg-gray-700 px-8 pt-24 pb-8 shadow-sm lg:min-h-fit lg:pt-10"
 				onSubmit={async (e) => {
 					e.preventDefault();
-					setInvalidSignupWarning();
+
+					if (!signup || !isEmailTaken) {
+						setInvalidSignupWarning(
+							<div className="mb-4 w-full rounded bg-red-500 p-1 px-5 text-white shadow-sm ">
+								<p>
+									Something went wrong. Please try again.
+								</p>
+							</div>
+						)
+						return
+					}
+					setInvalidSignupWarning(<></>);
 
 					const warningsList = [];
 

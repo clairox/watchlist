@@ -1,20 +1,25 @@
 import axios from "../lib/axiosInstance";
-import React from "react";
+import React, { MutableRefObject } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useAuth } from "../lib/authContext";
 
-export const AddToListDialog = ({ data, closeAddToListDialog }) => {
-	const [watchlists, setWatchlists] = useState([]);
+type Props = {
+	data: {[key: string]: any};
+	closeAddToListDialog: () => void;
+}
+
+export const AddToListDialog: React.FunctionComponent<Props> = ({ data, closeAddToListDialog }) => {
+	const [watchlists, setWatchlists] = useState<{[key: string]: any}[]>([]);
 
 	const { user } = useAuth();
 	const { id, title, releaseDate, posterURL } = data;
 
 	const [isOpen, setOpen] = useState(false);
 
-	const listSelect = useRef(null);
-	const dialog = useRef(null);
+	const listSelect: MutableRefObject<HTMLSelectElement | null> = useRef(null);
+	const dialog: MutableRefObject<HTMLDivElement | null> = useRef(null);
 
 	useEffect(() => {
 		axios
@@ -32,6 +37,7 @@ export const AddToListDialog = ({ data, closeAddToListDialog }) => {
 			}
 
 			if (
+				e.target instanceof HTMLElement &&
 				!dialog.current?.contains(e.target) &&
 				e.target.id !== "add-to-list-button" &&
 				isOpen
@@ -53,8 +59,8 @@ export const AddToListDialog = ({ data, closeAddToListDialog }) => {
 					e.preventDefault();
 
 					const watchlistId = watchlists.find(
-						(i) => i.name === listSelect.current.value
-					).id;
+						(i) => i.name === listSelect.current?.value
+					)?.id;
 
 					await axios
 						.put(

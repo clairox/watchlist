@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, MutableRefObject, SetStateAction } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,8 +9,15 @@ import {
 import { useAuth } from "../lib/authContext";
 import { useState } from "react";
 import { SearchBar } from "./SearchBar";
+import { MovieData } from "../../types";
 
-export const Navbar = ({
+type Props = {
+	menuButton: MutableRefObject<HTMLDivElement | null>;
+	setSideMenuOpen: Dispatch<SetStateAction<boolean>>;
+	openAddToListDialog: (data: MovieData) => void;
+};
+
+export const Navbar: React.FunctionComponent<Props> = ({
 	menuButton,
 	setSideMenuOpen,
 	openAddToListDialog,
@@ -40,7 +47,7 @@ export const Navbar = ({
 					>
 						<FontAwesomeIcon
 							icon={faBars}
-							size="xl"
+							size="lg"
 							className="hover:cursor-pointer"
 							id="menu-button"
 							onClick={() => setSideMenuOpen(true)}
@@ -95,7 +102,7 @@ export const Navbar = ({
 					>
 						<FontAwesomeIcon
 							icon={faMagnifyingGlass}
-							size="xl"
+							size="lg"
 							className="hover:cursor-pointer"
 							onClick={() => setSearchBarOpen(true)}
 						/>
@@ -103,7 +110,7 @@ export const Navbar = ({
 					<div className="leading-[56px]" id="logout-button">
 						<FontAwesomeIcon
 							icon={faRightFromBracket}
-							size="xl"
+							size="lg"
 							className="hover:cursor-pointer"
 							onClick={logout}
 						/>
