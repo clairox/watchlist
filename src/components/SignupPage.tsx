@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../lib/authContext";
 
@@ -142,6 +143,9 @@ export const SignupPage = () => {
 				}}
 			>
 				<div className="mx-auto max-w-[384px]">
+					<Helmet>
+						<title>Sign up</title>
+					</Helmet>
 					<div className="flex flex-col items-start">
 						<div className="mb-7 w-full">
 							<h1 className="text-4xl font-bold text-white">

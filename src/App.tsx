@@ -12,6 +12,7 @@ import { WatchlistPage } from "./components/WatchlistPage";
 import { ErrorPage } from "./components/ErrorPage";
 
 //TODO: write a README.md
+//TODO: go to 404 page if url leads nowhere
 function App() {
 	return (
 		<div className="App min-h-screen bg-gray-800 pb-20">

@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 
 type Props = {
 	code: number,
@@ -8,6 +9,9 @@ type Props = {
 export const ErrorPage: React.FunctionComponent<Props> = ({ code, message }) => {
 	return (
 		<div className="h-screen bg-white">
+			<Helmet>
+				<title>{code}</title>
+			</Helmet>
 			<div className="mx-auto mt-[200px] flex flex-col justify-center">
 				<h1 className="mr-20 text-6xl font-bold text-red-500">
 					{code}:

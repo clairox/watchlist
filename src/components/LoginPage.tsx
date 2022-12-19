@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../lib/authContext";
 
@@ -26,6 +27,9 @@ export const LoginPage = () => {
 	// form pt-10 pb-8
 	return (
 		<div className="mx-auto min-h-screen w-full lg:max-w-md lg:py-24">
+			<Helmet>
+				<title>Login</title>
+			</Helmet>
 			<form
 				className="min-h-screen rounded bg-gray-700 px-8 pt-24 pb-8 shadow-sm lg:min-h-fit lg:pt-10"
 				onSubmit={(e) => {

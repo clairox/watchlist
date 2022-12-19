@@ -5,6 +5,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { WatchlistPreviewSlider } from "./WatchlistPreviewSlider";
 import { Watchlist } from "../../types";
+import { Helmet } from "react-helmet";
 
 export const HomePage = () => {
 	const [watchlists, setWatchlists] = useState<Watchlist[]>([]);
@@ -44,6 +45,9 @@ export const HomePage = () => {
 	//TODO: make watchlist image column which is equal to the most recently added poster or a custom image
 	return (
 		<div>
+			<Helmet>
+				<title>Watchlist</title>
+			</Helmet>
 			<ul>
 				{sortWatchlists(watchlists)
 					.map((data: Watchlist, i) => (

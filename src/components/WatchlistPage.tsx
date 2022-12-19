@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { WatchlistItem as WI } from "../../types";
+import { Helmet } from "react-helmet";
 
 type ItemProps = {
 	data: WI;
@@ -198,6 +199,9 @@ export const WatchlistPage: React.FunctionComponent = () => {
 
 	return (
 		<div className="mt-6">
+			<Helmet>
+				<title>{watchlistName ? `${watchlistName} | Watchlist` : 'Watchlist'}</title>
+			</Helmet>
 			<div className="mx-7 flex h-[37px] max-w-[1500px] flex-row 2xl:mx-auto">
 				{editMode ? (
 					<form

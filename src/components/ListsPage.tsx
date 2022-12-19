@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../lib/authContext";
 import { Watchlist } from "../../types";
+import { Helmet } from "react-helmet";
 
 type ItemProps = {
 	data: Watchlist;
@@ -41,6 +42,9 @@ export const ListsPage = () => {
 
 	return (
 		<div>
+			<Helmet>
+				<title>Lists</title>
+			</Helmet>
 			<ul>
 				{watchlists.map((data: Watchlist, i: number) => (
 					<Link to={`/lists/${data.id}`} key={i}>
