@@ -8,15 +8,15 @@ type Props = {
 
 export const ErrorPage: React.FunctionComponent<Props> = ({ code, message }) => {
 	return (
-		<div className="h-screen bg-white">
+		<div className="h-fit">
 			<Helmet>
 				<title>{code.toString()}</title>
 			</Helmet>
-			<div className="mx-auto mt-[200px] flex flex-col justify-center">
-				<h1 className="mr-20 text-6xl font-bold text-red-500">
+			<div className="mx-auto pt-[200px] flex flex-col justify-center">
+				<h1 className="mr-20 text-6xl font-bold text-gray-400">
 					{code}:
 				</h1>
-				<p className="ml-10 mt-2 text-lg">{message}</p>
+				<p className="ml-10 mt-2 text-lg text-gray-100">{message}</p>
 			</div>
 		</div>
 	);
