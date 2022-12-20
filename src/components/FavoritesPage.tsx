@@ -1,5 +1,5 @@
-import React from "react";
-import { Helmet } from "react-helmet";
+import React from 'react';
+import { Helmet } from 'react-helmet';
 
 export const FavoritesPage: React.FunctionComponent = () => {
 	return (
@@ -9,5 +9,5 @@ export const FavoritesPage: React.FunctionComponent = () => {
 			</Helmet>
 			FavoritesPage
 		</div>
-		);
+	);
 };

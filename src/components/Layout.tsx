@@ -1,12 +1,12 @@
-import React, { MutableRefObject, useRef, useState, ReactNode } from "react";
-import { Outlet } from "react-router";
-import { Navbar } from "./Navbar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
-import { AddToListDialog } from "./AddToListDialog";
-import { useEffect } from "react";
-import { MovieData } from "../../types";
+import React, { MutableRefObject, useRef, useState, ReactNode } from 'react';
+import { Outlet } from 'react-router';
+import { Navbar } from './Navbar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import { AddToListDialog } from './AddToListDialog';
+import { useEffect } from 'react';
+import { MovieData } from '../../types';
 
 export const Layout: React.FunctionComponent = () => {
 	const [sideMenuOpen, setSideMenuOpen] = useState(false);
@@ -18,10 +18,7 @@ export const Layout: React.FunctionComponent = () => {
 	const openAddToListDialog = (data: MovieData) => {
 		setAddToListDialog(
 			<div className="absolute z-50 mx-auto mt-32 flex w-full justify-center">
-				<AddToListDialog
-					data={data}
-					closeAddToListDialog={closeAddToListDialog}
-				/>
+				<AddToListDialog data={data} closeAddToListDialog={closeAddToListDialog} />
 			</div>
 		);
 	};
@@ -31,15 +28,12 @@ export const Layout: React.FunctionComponent = () => {
 	};
 
 	useEffect(() => {
-		window.onclick = (e) => {
+		window.onclick = e => {
 			if (!sideMenu.current || !menuButton.current) {
 				return;
 			}
 
-			if (
-				!sideMenu.current.contains(e.target as HTMLElement) &&
-				!menuButton.current.contains(e.target as HTMLElement)
-			) {
+			if (!sideMenu.current.contains(e.target as HTMLElement) && !menuButton.current.contains(e.target as HTMLElement)) {
 				setSideMenuOpen(false);
 			}
 		};
@@ -50,15 +44,9 @@ export const Layout: React.FunctionComponent = () => {
 		<div>
 			{addToListDialog}
 			<div>
-				{sideMenuOpen && (
-					<div className="fixed z-50 h-full w-full bg-black opacity-30 lg:hidden" />
-				)}
+				{sideMenuOpen && <div className="fixed z-50 h-full w-full bg-black opacity-30 lg:hidden" />}
 				<div>
-					<Navbar
-						menuButton={menuButton}
-						setSideMenuOpen={setSideMenuOpen}
-						openAddToListDialog={openAddToListDialog}
-					/>
+					<Navbar menuButton={menuButton} setSideMenuOpen={setSideMenuOpen} openAddToListDialog={openAddToListDialog} />
 				</div>
 				<div className="pt-14">
 					<Outlet />
@@ -66,7 +54,7 @@ export const Layout: React.FunctionComponent = () => {
 			</div>
 			<nav
 				className={`fixed top-0 left-0 z-50 h-full w-72 transform overflow-auto bg-gray-700 text-gray-100 drop-shadow-lg transition-all duration-300 ease-in-out lg:hidden ${
-					sideMenuOpen ? "translate-x-0" : "-translate-x-full"
+					sideMenuOpen ? 'translate-x-0' : '-translate-x-full'
 				}`}
 				ref={sideMenu}
 			>

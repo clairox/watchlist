@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
-import { Helmet } from "react-helmet";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../lib/authContext";
+import React, { useState } from 'react';
+import { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../lib/authContext';
 
 export const SignupPage = () => {
-	const [firstName, setFirstName] = useState("");
-	const [lastName, setLastName] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 	const [invalidSignupWarning, setInvalidSignupWarning] = useState(<></>);
 
 	// Border Color Classes
-	const [firstNameBCC, setFirstNameBCC] = useState("border-gray-600");
-	const [lastNameBCC, setLastNameBCC] = useState("border-gray-600");
-	const [emailBCC, setEmailBCC] = useState("border-gray-600");
-	const [passwordBCC, setPasswordBCC] = useState("border-gray-600");
+	const [firstNameBCC, setFirstNameBCC] = useState('border-gray-600');
+	const [lastNameBCC, setLastNameBCC] = useState('border-gray-600');
+	const [emailBCC, setEmailBCC] = useState('border-gray-600');
+	const [passwordBCC, setPasswordBCC] = useState('border-gray-600');
 
 	const { user, signup, isEmailTaken } = useAuth() || {};
 
@@ -23,7 +23,7 @@ export const SignupPage = () => {
 	const location = useLocation();
 
 	// @ts-ignore
-	const { from } = location?.state || { from: { pathname: "/" } };
+	const { from } = location?.state || { from: { pathname: '/' } };
 
 	const EMAIL_PATTERN =
 		/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -38,88 +38,63 @@ export const SignupPage = () => {
 		<div className="mx-auto min-h-screen w-full lg:max-w-md lg:py-24">
 			<form
 				className="min-h-screen rounded bg-gray-700 px-8 pt-24 pb-8 shadow-sm lg:min-h-fit lg:pt-10"
-				onSubmit={async (e) => {
+				onSubmit={async e => {
 					e.preventDefault();
 
 					if (!signup || !isEmailTaken) {
 						setInvalidSignupWarning(
 							<div className="mb-4 w-full rounded bg-red-500 p-1 px-5 text-white shadow-sm ">
-								<p>
-									Something went wrong. Please try again.
-								</p>
+								<p>Something went wrong. Please try again.</p>
 							</div>
-						)
-						return
+						);
+						return;
 					}
 					setInvalidSignupWarning(<></>);
 
 					const warningsList = [];
 
 					if (firstName.length < 2) {
-						warningsList.push(
-							<li key="firstNameTooShort">
-								First name should be at least 2 characters
-							</li>
-						);
+						warningsList.push(<li key="firstNameTooShort">First name should be at least 2 characters</li>);
 					}
 
 					if (lastName.length < 2) {
-						warningsList.push(
-							<li key="lastNameTooShort">
-								Last name should be at least 2 characters
-							</li>
-						);
+						warningsList.push(<li key="lastNameTooShort">Last name should be at least 2 characters</li>);
 					}
 
 					if (EMAIL_PATTERN.test(email)) {
 						const emailTaken = await isEmailTaken(email);
 						if (emailTaken) {
-							warningsList.push(
-								<li key="emailUnavailable">
-									Email is already in use
-								</li>
-							);
+							warningsList.push(<li key="emailUnavailable">Email is already in use</li>);
 						}
 					} else {
-						warningsList.push(
-							<li key="emailInvalid">
-								Please enter a valid email
-							</li>
-						);
+						warningsList.push(<li key="emailInvalid">Please enter a valid email</li>);
 					}
 
 					if (password.length < 8) {
-						warningsList.push(
-							<li key="passwordTooShort">
-								Password should be at least 8 characters
-							</li>
-						);
+						warningsList.push(<li key="passwordTooShort">Password should be at least 8 characters</li>);
 					}
 
 					//TODO: use invalid and required class
 					const warning = (
 						<div className="mb-4 w-full rounded bg-red-500 p-5 text-left text-white shadow-sm">
-							<p className="mb-3">
-								The following errors must be fixed before you
-								sign up
-							</p>
+							<p className="mb-3">The following errors must be fixed before you sign up</p>
 							<ul className="list-disc pl-6">
-								{warningsList.map((w) => {
+								{warningsList.map(w => {
 									switch (w.key) {
-										case "firstNameTooShort":
-											setFirstNameBCC("border-red-500");
+										case 'firstNameTooShort':
+											setFirstNameBCC('border-red-500');
 											return w;
-										case "lastNameTooShort":
-											setLastNameBCC("border-red-500");
+										case 'lastNameTooShort':
+											setLastNameBCC('border-red-500');
 											return w;
-										case "emailUnavailable":
-											setEmailBCC("border-red-500");
+										case 'emailUnavailable':
+											setEmailBCC('border-red-500');
 											return w;
-										case "emailInvalid":
-											setEmailBCC("border-red-500");
+										case 'emailInvalid':
+											setEmailBCC('border-red-500');
 											return w;
-										case "passwordTooShort":
-											setPasswordBCC("border-red-500");
+										case 'passwordTooShort':
+											setPasswordBCC('border-red-500');
 											return w;
 										default:
 											return w;
@@ -148,9 +123,7 @@ export const SignupPage = () => {
 					</Helmet>
 					<div className="flex flex-col items-start">
 						<div className="mb-7 w-full">
-							<h1 className="text-4xl font-bold text-white">
-								Sign up
-							</h1>
+							<h1 className="text-4xl font-bold text-white">Sign up</h1>
 						</div>
 						{invalidSignupWarning}
 						<div className="mb-6 flex w-full flex-row ">
@@ -162,9 +135,9 @@ export const SignupPage = () => {
 									id="ifirst"
 									placeholder="First"
 									value={firstName}
-									onChange={(e) => {
+									onChange={e => {
 										setFirstName(e.target.value);
-										setFirstNameBCC("border-gray-600");
+										setFirstNameBCC('border-gray-600');
 									}}
 								/>
 							</div>
@@ -176,9 +149,9 @@ export const SignupPage = () => {
 									id="ilast"
 									placeholder="Last"
 									value={lastName}
-									onChange={(e) => {
+									onChange={e => {
 										setLastName(e.target.value);
-										setLastNameBCC("border-gray-600");
+										setLastNameBCC('border-gray-600');
 									}}
 								/>
 							</div>
@@ -191,9 +164,9 @@ export const SignupPage = () => {
 								id="iemail"
 								placeholder="Email"
 								value={email}
-								onChange={(e) => {
+								onChange={e => {
 									setEmail(e.target.value);
-									setEmailBCC("border-gray-600");
+									setEmailBCC('border-gray-600');
 								}}
 							/>
 						</div>
@@ -205,9 +178,9 @@ export const SignupPage = () => {
 								id="ipassword"
 								placeholder="Password"
 								value={password}
-								onChange={(e) => {
+								onChange={e => {
 									setPassword(e.target.value);
-									setPasswordBCC("border-gray-600");
+									setPasswordBCC('border-gray-600');
 								}}
 							/>
 						</div>
@@ -215,12 +188,7 @@ export const SignupPage = () => {
 							<button
 								className="focus:shadow-outline rounded bg-gray-500 py-2 px-4 font-bold text-white hover:bg-gray-600 focus:outline-none disabled:bg-gray-500 disabled:text-gray-400 disabled:hover:bg-gray-500"
 								type="submit"
-								disabled={
-									firstName === "" ||
-									lastName === "" ||
-									email === "" ||
-									password === ""
-								}
+								disabled={firstName === '' || lastName === '' || email === '' || password === ''}
 							>
 								Sign up
 							</button>
@@ -228,7 +196,7 @@ export const SignupPage = () => {
 					</div>
 					<div>
 						<p className="text-gray-300">
-							Already have an account?{" "}
+							Already have an account?{' '}
 							<Link to="/login" className="text-white">
 								Login
 							</Link>

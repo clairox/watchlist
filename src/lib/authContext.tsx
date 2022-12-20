@@ -1,6 +1,6 @@
-import axios from "axios";
-import React, { useEffect, useState, useContext, createContext } from "react";
-import { LoginData, SignupData } from "../../types";
+import axios from 'axios';
+import React, { useEffect, useState, useContext, createContext } from 'react';
+import { LoginData, SignupData } from '../../types';
 
 type AuthUser = {
 	id: string;
@@ -10,8 +10,8 @@ type AuthUser = {
 } | null;
 
 type LoginResponse = {
-	status: number
-}
+	status: number;
+};
 
 const AuthContext = createContext<{
 	user?: AuthUser;
@@ -19,11 +19,12 @@ const AuthContext = createContext<{
 	signup?: (data: SignupData) => Promise<LoginResponse>;
 	logout?: () => void;
 	isEmailTaken?: (email: string) => Promise<boolean>;
+	isLoading?: boolean;
 }>({});
 
 type AuthProviderProps = {
 	children: React.ReactNode;
-}
+};
 
 export const ProvideAuth: React.FunctionComponent<AuthProviderProps> = ({ children }) => {
 	const auth = useProvideAuth();
@@ -36,6 +37,7 @@ export const useAuth = () => {
 
 const useProvideAuth = () => {
 	const [user, setUser] = useState<AuthUser | null>();
+	const [isLoading, setIsLoading] = useState(true);
 
 	const reqConfig = { withCredentials: true };
 
@@ -44,13 +46,17 @@ const useProvideAuth = () => {
 	const login = async (loginData: LoginData) => {
 		return await axios
 			.post(`${apiPath}/login`, loginData, reqConfig)
-			.then((res) => {
+			.then(res => {
 				setUser(res.data);
-				localStorage.setItem("user", res.data);
+				localStorage.setItem('user', res.data);
+				setIsLoading(false);
+
 				return { status: res.status };
 			})
-			.catch((err) => {
+			.catch(err => {
 				setUser(null);
+				setIsLoading(false);
+
 				return { status: err.response.status };
 			});
 	};
@@ -58,13 +64,16 @@ const useProvideAuth = () => {
 	const signup = async (signupData: SignupData) => {
 		return await axios
 			.post(`${apiPath}/signup`, signupData, reqConfig)
-			.then((res) => {
+			.then(res => {
 				setUser(res.data);
-				localStorage.setItem("user", res.data);
+				localStorage.setItem('user', res.data);
+				setIsLoading(false);
 				return { status: res.status };
 			})
-			.catch((err) => {
+			.catch(err => {
 				setUser(null);
+				setIsLoading(false);
+
 				return { status: err.response.status };
 			});
 	};
@@ -72,7 +81,8 @@ const useProvideAuth = () => {
 	const logout = async () => {
 		return await axios.get(`${apiPath}/logout`, reqConfig).then(() => {
 			setUser(null);
-			localStorage.removeItem("user");
+			localStorage.removeItem('user');
+			setIsLoading(false);
 		});
 	};
 
@@ -96,18 +106,21 @@ const useProvideAuth = () => {
 	useEffect(() => {
 		axios
 			.get(`${apiPath}/users/sessionUser`, { withCredentials: true })
-			.then((res) => {
+			.then(res => {
 				if (res.data) {
 					setUser(res.data);
-					localStorage.setItem("user", res.data);
+					localStorage.setItem('user', res.data);
+					setIsLoading(false);
 				} else {
 					setUser(null);
-					localStorage.removeItem("user");
+					localStorage.removeItem('user');
+					setIsLoading(false);
 				}
 			})
 			.catch(() => {
 				setUser(null);
-				localStorage.removeItem("user");
+				localStorage.removeItem('user');
+				setIsLoading(false);
 			});
 	}, [apiPath]);
 
@@ -117,5 +130,6 @@ const useProvideAuth = () => {
 		signup,
 		logout,
 		isEmailTaken,
+		isLoading,
 	};
 };

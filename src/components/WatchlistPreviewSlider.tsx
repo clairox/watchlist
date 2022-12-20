@@ -10,29 +10,39 @@ import { Watchlist } from '../../types';
 type SliderItem = Watchlist & {
 	sliderItemId?: string;
 	hidden?: boolean;
-}
+};
 
 type ItemProps = {
 	data: SliderItem;
 	id: string;
-}
+};
 
 const WatchlistPreviewItem = React.memo<ItemProps>(({ data, id }) => {
 	let { poster_url, hidden } = data;
 
 	return (
-		<li id={id} className={`${hidden ? '' : 'inline-block'} w-[25%] px-1 text-white md:w-[16.6666666%] lg:w-[14.2857143%] xl:w-[11.1111111%] 2xl:w-[10%]`}>
-			{hidden ? <></> : <img className="w-fit rounded-lg bg-gray-500" src={`https://image.tmdb.org/t/xTranslation/w600_and_h900_bestv2${poster_url}`} alt="movie poster" />}
+		<li
+			id={id}
+			className={`${hidden ? '' : 'inline-block'} w-[25%] px-1 text-white md:w-[16.6666666%] lg:w-[14.2857143%] xl:w-[11.1111111%] 2xl:w-[10%]`}
+		>
+			{hidden ? (
+				<></>
+			) : (
+				<img
+					className="w-fit rounded-lg bg-gray-500"
+					src={`https://image.tmdb.org/t/xTranslation/w600_and_h900_bestv2${poster_url}`}
+					alt="movie poster"
+				/>
+			)}
 		</li>
 	);
 });
 
 type Slider = {
 	data: Watchlist;
-}
+};
 
 export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }) => {
-
 	const [watchlistItems, setWatchlistItems] = useState<SliderItem[]>([]);
 	const [_default, setDefault] = useState(false);
 	const [count, setCount] = useState(0);
@@ -97,7 +107,6 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 		setMoveLeftHTML(<></>);
 		setMoveRightHTML(<></>);
 	};
-
 
 	//TODO: make placeholder if images don't show or are loading or something
 	//TODO: make slider wrap
@@ -272,7 +281,7 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 		if (!watchlistItems.length) {
 			return;
 		}
-		const changeElementIdsByVisibility =  (newSections: WindowWidth) => {
+		const changeElementIdsByVisibility = (newSections: WindowWidth) => {
 			const newItems = cloneDeep(watchlistItems);
 			let startIndex = 0;
 			let itemsLeft = 0;
