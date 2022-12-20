@@ -2,7 +2,7 @@ import React, { Dispatch, MutableRefObject, SetStateAction } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faRightFromBracket, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../lib/authContext';
+import { useAuth } from '../context/authContext';
 import { useState } from 'react';
 import { SearchBar } from './SearchBar';
 import { MovieData } from '../../types';

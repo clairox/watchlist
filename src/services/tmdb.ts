@@ -1,4 +1,4 @@
-import axios from './axiosInstance';
+import axios from '../lib/axiosInstance';
 
 const tmdbPath = process.env.REACT_APP_TMDB_REQUEST_URL;
 const tmdbApiKey = process.env.REACT_APP_TMDB_API_KEY;

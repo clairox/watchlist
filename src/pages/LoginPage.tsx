@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../lib/authContext';
+import { useAuth } from '../context/authContext';
 
 export const LoginPage = () => {
 	const [email, setEmail] = useState('');

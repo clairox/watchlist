@@ -3,7 +3,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../lib/authContext';
+import { useAuth } from '../context/authContext';
 import { Watchlist } from '../../types';
 import { Helmet } from 'react-helmet';
 

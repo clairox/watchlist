@@ -3,7 +3,7 @@ import React, { MutableRefObject } from 'react';
 import { useRef } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useAuth } from '../lib/authContext';
+import { useAuth } from '../context/authContext';
 
 type Props = {
 	data: { [key: string]: any };

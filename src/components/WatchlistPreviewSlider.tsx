@@ -1,6 +1,6 @@
 import axios from '../lib/axiosInstance';
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { useAuth } from '../lib/authContext';
+import { useAuth } from '../context/authContext';
 import { faAngleLeft, faAngleRight, faLock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';

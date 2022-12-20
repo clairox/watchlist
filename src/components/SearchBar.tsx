@@ -1,6 +1,6 @@
 import React, { Dispatch, MutableRefObject, SetStateAction, useEffect } from 'react';
 import { useState } from 'react';
-import { searchMovie } from '../lib/tmdb';
+import { searchMovie } from '../services/tmdb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { useRef } from 'react';
