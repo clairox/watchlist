@@ -1,5 +1,8 @@
 # directories
+/.vscode
 /node_modules
 
 # files
 .env
+.prettierignore
+.prettierrc.json
