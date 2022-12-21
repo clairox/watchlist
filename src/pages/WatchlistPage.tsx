@@ -305,7 +305,19 @@ export const WatchlistPage: React.FunctionComponent = () => {
 		} else {
 			setContent(<ErrorPage code={404} message={'Page Not Found'} />);
 		}
-	}, [isLoading, editMode, name, count, isDefault, editedName, items]);
+	}, [
+		isLoading,
+		editMode,
+		name,
+		count,
+		isDefault,
+		editedName,
+		items,
+		deleteItem,
+		id,
+		navigate,
+		setWatched,
+	]);
 
 	return (
 		<div className="mt-6">

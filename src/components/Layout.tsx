@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useRef, useState, ReactNode } from 'react';
+import React, { MutableRefObject, useRef, useState } from 'react';
 import { Outlet } from 'react-router';
 import { Navbar } from './Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

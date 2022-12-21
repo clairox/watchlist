@@ -10,7 +10,6 @@ import {
 import { useAuth } from '../context/authContext';
 import { useState } from 'react';
 import { SearchBar } from './SearchBar';
-import { MovieData } from '../../types';
 
 //TODO: clear localstorage and reload on logout
 type Props = {

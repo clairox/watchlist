@@ -1,5 +1,5 @@
 import axios from '../lib/axiosInstance';
-import React, { MutableRefObject, useEffect, useRef, useState } from 'react';
+import React, { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/authContext';
 import { faAngleLeft, faAngleRight, faLock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -34,7 +34,7 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 
 	type WindowWidth = 4 | 6 | 7 | 9 | 10;
 
-	const calculateWindowWidth = (): WindowWidth => {
+	const calculateWindowWidth = useCallback((): WindowWidth => {
 		const w = window.innerWidth;
 		if (w < 768) {
 			return 4;
@@ -49,7 +49,7 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 			return 9;
 		}
 		return 10;
-	};
+	}, []);
 
 	//TODO: add feature to move to different list
 	const [numberOfItemSections, setNumberOfItemSections] = useState(calculateWindowWidth());
@@ -322,7 +322,7 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 		};
 
 		window.addEventListener('resize', onResize);
-	}, [numberOfItemSections, watchlistItems, watchlistName]);
+	}, [numberOfItemSections, watchlistItems, watchlistName, calculateWindowWidth]);
 
 	useEffect(() => {
 		if (user?.id && !initialItemLoadComplete) {

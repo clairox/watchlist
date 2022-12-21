@@ -2,9 +2,9 @@ import React, { Dispatch, MutableRefObject, SetStateAction, useCallback, useEffe
 import { useState } from 'react';
 import { searchMovie } from '../services/tmdb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark, faCirclePlus, faPlus, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faCirclePlus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useRef } from 'react';
-import { MovieData, Watchlist } from '../../types';
+import { Watchlist } from '../../types';
 import { useModal } from '../hooks/useModal';
 import ModalWrapper from './ModalWrapper';
 import { useAuth } from '../context/authContext';
