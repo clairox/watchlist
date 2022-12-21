@@ -271,14 +271,17 @@ export const WatchlistPage: React.FunctionComponent = () => {
 							</div>
 						)}
 						<div className="flex flex-row justify-end gap-4">
-							<Button onClick={() => setEditMode(!editMode)}>
-								<FontAwesomeIcon
-									className="pr-2"
-									icon={editMode ? faCheck : faPencil}
-									size="1x"
-								/>
-								<span className="text-lg">{editMode ? 'Finish' : 'Edit'}</span>
-							</Button>
+							{editMode ? (
+								<Button onClick={() => setEditMode(false)}>
+									<FontAwesomeIcon className="pr-2" icon={faCheck} size="1x" />
+									<span className="text-lg">Finish</span>
+								</Button>
+							) : (
+								<Button onClick={() => setEditMode(true)}>
+									<FontAwesomeIcon className="pr-2" icon={faPencil} size="1x" />
+									<span className="text-lg">Edit</span>
+								</Button>
+							)}
 							{!editMode && (
 								<Button
 									level="danger"
