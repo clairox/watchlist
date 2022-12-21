@@ -4,28 +4,13 @@ import { Navbar } from './Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-import { AddToListDialog } from './AddToListDialog';
 import { useEffect } from 'react';
-import { MovieData } from '../../types';
 
 export const Layout: React.FunctionComponent = () => {
 	const [sideMenuOpen, setSideMenuOpen] = useState(false);
-	const [addToListDialog, setAddToListDialog] = useState<ReactNode | null>(null);
 
 	const sideMenu: MutableRefObject<HTMLDivElement | null> = useRef(null);
 	const menuButton: MutableRefObject<HTMLDivElement | null> = useRef(null);
-
-	const openAddToListDialog = (data: MovieData) => {
-		setAddToListDialog(
-			<div className="absolute z-50 mx-auto mt-32 flex w-full justify-center">
-				<AddToListDialog data={data} closeAddToListDialog={closeAddToListDialog} />
-			</div>
-		);
-	};
-
-	const closeAddToListDialog = () => {
-		setAddToListDialog(null);
-	};
 
 	useEffect(() => {
 		window.onclick = e => {
@@ -33,7 +18,10 @@ export const Layout: React.FunctionComponent = () => {
 				return;
 			}
 
-			if (!sideMenu.current.contains(e.target as HTMLElement) && !menuButton.current.contains(e.target as HTMLElement)) {
+			if (
+				!sideMenu.current.contains(e.target as HTMLElement) &&
+				!menuButton.current.contains(e.target as HTMLElement)
+			) {
 				setSideMenuOpen(false);
 			}
 		};
@@ -42,13 +30,14 @@ export const Layout: React.FunctionComponent = () => {
 	//TODO: clicking off dialog window shouldn't click other things
 	return (
 		<div>
-			{addToListDialog}
 			<div>
-				{sideMenuOpen && <div className="fixed z-50 h-full w-full bg-black opacity-30 lg:hidden" />}
+				{sideMenuOpen && (
+					<div className="fixed z-50 h-full w-full bg-black opacity-30 lg:hidden" />
+				)}
 				<div>
-					<Navbar menuButton={menuButton} setSideMenuOpen={setSideMenuOpen} openAddToListDialog={openAddToListDialog} />
+					<Navbar menuButton={menuButton} setSideMenuOpen={setSideMenuOpen} />
 				</div>
-				<div className="pt-14">
+				<div className="px-4 pt-20">
 					<Outlet />
 				</div>
 			</div>

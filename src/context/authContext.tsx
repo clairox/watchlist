@@ -82,6 +82,7 @@ const useProvideAuth = () => {
 		return await axios.get(`${apiPath}/logout`, reqConfig).then(() => {
 			setUser(null);
 			localStorage.removeItem('user');
+			localStorage.removeItem('watchlists');
 			setIsLoading(false);
 		});
 	};

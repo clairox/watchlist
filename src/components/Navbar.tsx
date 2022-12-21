@@ -1,33 +1,56 @@
 import React, { Dispatch, MutableRefObject, SetStateAction } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faRightFromBracket, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import {
+	faBars,
+	faRightFromBracket,
+	faMagnifyingGlass,
+	faUser,
+} from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/authContext';
 import { useState } from 'react';
 import { SearchBar } from './SearchBar';
 import { MovieData } from '../../types';
 
+//TODO: clear localstorage and reload on logout
 type Props = {
 	menuButton: MutableRefObject<HTMLDivElement | null>;
 	setSideMenuOpen: Dispatch<SetStateAction<boolean>>;
-	openAddToListDialog: (data: MovieData) => void;
 };
 
-export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenuOpen, openAddToListDialog }) => {
+export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenuOpen }) => {
 	const [searchBarOpen, setSearchBarOpen] = useState(false);
 
-	const { logout } = useAuth();
+	const { user, logout } = useAuth();
+	const navigate = useNavigate();
 
 	const searchBarProps = {
 		searchBarOpen: searchBarOpen,
 		setSearchBarOpen: setSearchBarOpen,
-		openAddToListDialog: openAddToListDialog,
+	};
+
+	const handleUserButtonClick = () => {
+		if (!user) {
+			navigate('/login');
+		}
+	};
+
+	const handleLogoutButtonClick = async () => {
+		if (!logout) return;
+
+		await logout();
+		navigate('/');
 	};
 
 	return (
 		<nav className="fixed z-40 h-14 w-full bg-gray-700 drop-shadow-sm">
 			<div className="mx-auto flex h-full max-w-screen-2xl flex-row justify-between text-gray-100">
-				<div className={`ml-4 flex min-w-[91px] flex-row lg:ml-10 lg:min-w-[207px] ${searchBarOpen ? 'hidden' : ''} sm:flex`} id="nav-left">
+				<div
+					className={`ml-4 flex min-w-[91px] flex-row lg:ml-10 lg:min-w-[207px] ${
+						searchBarOpen ? 'hidden' : ''
+					} sm:flex`}
+					id="nav-left"
+				>
 					<div className="pr-6 leading-[56px] lg:hidden" ref={menuButton}>
 						<FontAwesomeIcon
 							icon={faBars}
@@ -45,14 +68,20 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 					<div className="ml-10 hidden flex-row leading-[60px] lg:flex" id="nav">
 						<div id="nav-lists">
 							<Link to="/lists">
-								<p className="text-md h-full" onClick={() => setSideMenuOpen(false)}>
+								<p
+									className="text-md h-full"
+									onClick={() => setSideMenuOpen(false)}
+								>
 									Lists
 								</p>
 							</Link>
 						</div>
 						<div className="ml-7" id="nav-favorites">
 							<Link to="/favorites">
-								<p className="text-md h-full" onClick={() => setSideMenuOpen(false)}>
+								<p
+									className="text-md h-full"
+									onClick={() => setSideMenuOpen(false)}
+								>
 									Favorites
 								</p>
 							</Link>
@@ -64,15 +93,37 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 				</>
 
 				<div
-					className={`mr-4 flex min-w-[91px] flex-row justify-end lg:mr-10 lg:min-w-[207px] ${searchBarOpen ? 'hidden' : ''} sm:flex`}
+					className={`mr-4 flex min-w-[91px] flex-row justify-end gap-6 lg:mr-10 lg:min-w-[207px] ${
+						searchBarOpen ? 'hidden' : ''
+					} sm:flex`}
 					id="nav-right"
 				>
-					<div className="mr-6 leading-[56px] sm:hidden" id="search-button">
-						<FontAwesomeIcon icon={faMagnifyingGlass} size="lg" className="hover:cursor-pointer" onClick={() => setSearchBarOpen(true)} />
+					<div className="leading-[56px] sm:hidden" id="search-button">
+						<FontAwesomeIcon
+							icon={faMagnifyingGlass}
+							size="lg"
+							className="hover:cursor-pointer"
+							onClick={() => setSearchBarOpen(true)}
+						/>
 					</div>
-					<div className="leading-[56px]" id="logout-button">
-						<FontAwesomeIcon icon={faRightFromBracket} size="lg" className="hover:cursor-pointer" onClick={logout} />
+					<div className="leading-[56px]" id="user-button">
+						<FontAwesomeIcon
+							icon={faUser}
+							size="lg"
+							className="hover:cursor-pointer"
+							onClick={handleUserButtonClick}
+						/>
 					</div>
+					{Boolean(user) && (
+						<div className="leading-[56px]" id="logout-button">
+							<FontAwesomeIcon
+								icon={faRightFromBracket}
+								size="lg"
+								className="hover:cursor-pointer"
+								onClick={handleLogoutButtonClick}
+							/>
+						</div>
+					)}
 				</div>
 			</div>
 		</nav>
