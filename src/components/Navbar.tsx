@@ -2,7 +2,6 @@ import React, { Dispatch, MutableRefObject, SetStateAction } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-	faBars,
 	faRightFromBracket,
 	faMagnifyingGlass,
 	faUser,
