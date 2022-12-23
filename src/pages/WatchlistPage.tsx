@@ -8,6 +8,7 @@ import { WatchlistItem as WI } from '../../types';
 import { Helmet } from 'react-helmet';
 import { ErrorPage } from './ErrorPage';
 import Button from '../components/Button';
+import { useAuth } from '../context/authContext';
 
 type ItemProps = {
 	data: WI;
@@ -51,7 +52,8 @@ const WatchlistItem: React.FunctionComponent<ItemProps> = ({
 					<FontAwesomeIcon
 						className="relative hover:text-red-500"
 						icon={faXmark}
-						size="lg"
+						// @ts-ignore
+						size="xl"
 						color="white"
 						onClick={() => {
 							deleteItem(data.id);
@@ -246,7 +248,8 @@ export const WatchlistPage: React.FunctionComponent = () => {
 								<FontAwesomeIcon
 									className="relative right-5 pt-1 hover:cursor-pointer md:pt-2"
 									icon={faXmark}
-									size="lg"
+									// @ts-ignore
+									size="xl"
 									color="white"
 									onClick={() => {
 										setEditedName('');

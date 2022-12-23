@@ -38,7 +38,7 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 		if (!logout) return;
 
 		await logout();
-		navigate('/');
+		navigate(0);
 	};
 
 	return (
@@ -50,7 +50,7 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 					} sm:flex`}
 					id="nav-left"
 				>
-					<div className="pr-6 leading-[56px] lg:hidden" ref={menuButton}>
+					{/* <div className="pr-6 leading-[56px] lg:hidden" ref={menuButton}>
 						<FontAwesomeIcon
 							icon={faBars}
 							size="lg"
@@ -58,13 +58,13 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 							id="menu-button"
 							onClick={() => setSideMenuOpen(true)}
 						/>
-					</div>
+					</div> */}
 					<div className="h-full" id="brand-logo">
 						<Link to="/">
 							<span className="h-full text-3xl font-bold leading-[54px]">WL</span>
 						</Link>
 					</div>
-					<div className="ml-10 hidden flex-row leading-[60px] lg:flex" id="nav">
+					{/* <div className="ml-10 hidden flex-row leading-[60px] lg:flex" id="nav">
 						<div id="nav-lists">
 							<Link to="/lists">
 								<p
@@ -85,14 +85,14 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 								</p>
 							</Link>
 						</div>
-					</div>
+					</div> */}
 				</div>
 				<>
 					<SearchBar {...searchBarProps} />
 				</>
 
 				<div
-					className={`mr-4 flex min-w-[91px] flex-row justify-end gap-6 lg:mr-10 lg:min-w-[207px] ${
+					className={`mr-4 flex min-w-[91px] flex-row justify-end gap-7 lg:mr-10 lg:min-w-[207px] ${
 						searchBarOpen ? 'hidden' : ''
 					} sm:flex`}
 					id="nav-right"
@@ -100,7 +100,8 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 					<div className="leading-[56px] sm:hidden" id="search-button">
 						<FontAwesomeIcon
 							icon={faMagnifyingGlass}
-							size="lg"
+							// @ts-ignore
+							size="xl"
 							className="hover:cursor-pointer"
 							onClick={() => setSearchBarOpen(true)}
 						/>
@@ -108,7 +109,8 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 					<div className="leading-[56px]" id="user-button">
 						<FontAwesomeIcon
 							icon={faUser}
-							size="lg"
+							// @ts-ignore
+							size="xl"
 							className="hover:cursor-pointer"
 							onClick={handleUserButtonClick}
 						/>
@@ -117,7 +119,8 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 						<div className="leading-[56px]" id="logout-button">
 							<FontAwesomeIcon
 								icon={faRightFromBracket}
-								size="lg"
+								// @ts-ignore
+								size="xl"
 								className="hover:cursor-pointer"
 								onClick={handleLogoutButtonClick}
 							/>
