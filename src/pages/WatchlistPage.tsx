@@ -8,7 +8,6 @@ import { WatchlistItem as WI } from '../../types';
 import { Helmet } from 'react-helmet';
 import { ErrorPage } from './ErrorPage';
 import Button from '../components/Button';
-import { useAuth } from '../context/authContext';
 
 type ItemProps = {
 	data: WI;
