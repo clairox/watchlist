@@ -1,11 +1,7 @@
 import React, { Dispatch, MutableRefObject, SetStateAction } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-	faRightFromBracket,
-	faMagnifyingGlass,
-	faUser,
-} from '@fortawesome/free-solid-svg-icons';
+import { faRightFromBracket, faMagnifyingGlass, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../context/authContext';
 import { useState } from 'react';
 import { SearchBar } from './SearchBar';
