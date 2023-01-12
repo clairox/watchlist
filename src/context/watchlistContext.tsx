@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 
 const WatchlistsContext = createContext<{
 	watchlists?: WatchlistWithItems[];
-	loadState?: LoadState;
+	watchlistLoadState?: LoadState;
 	getWatchlist?: (id: string) => Promise<WatchlistWithItems | null>;
 	createWatchlist?: (name: string, isDefault: boolean) => Promise<WatchlistWithItems | null>;
 	updateWatchlistName?: (id: string, name: string) => Promise<WatchlistWithItems | null>;
@@ -372,7 +372,7 @@ const useProvideWatchlists = () => {
 
 	return {
 		watchlists,
-		loadState,
+		watchlistLoadState: loadState,
 		getWatchlist,
 		createWatchlist,
 		updateWatchlistName,

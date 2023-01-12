@@ -111,7 +111,7 @@ const Watchlist = React.memo<WatchlistProps>(props => {
 export const WatchlistPage: React.FunctionComponent = () => {
 	const {
 		getWatchlist,
-		loadState,
+		watchlistLoadState,
 		deleteItem: deleteWatchlistItem,
 		setItemWatched,
 		updateWatchlistName,
@@ -126,7 +126,7 @@ export const WatchlistPage: React.FunctionComponent = () => {
 	const [isPageLoading, setIsPageLoading] = useState(true);
 
 	useEffect(() => {
-		if (getWatchlist && id && loadState !== 'loading') {
+		if (getWatchlist && id && watchlistLoadState !== 'loading') {
 			getWatchlist(id)
 				.then(watchlist => {
 					if (!watchlist) {
@@ -145,7 +145,7 @@ export const WatchlistPage: React.FunctionComponent = () => {
 					return null;
 				});
 		}
-	}, [getWatchlist, id, loadState]);
+	}, [getWatchlist, id, watchlistLoadState]);
 
 	const [editMode, setEditMode] = useState(false);
 	const [editedName, setEditedName] = useState('');
@@ -292,7 +292,7 @@ export const WatchlistPage: React.FunctionComponent = () => {
 		id,
 		navigate,
 		setWatched,
-		loadState,
+		watchlistLoadState,
 		onEditName,
 		onDeleteWatchlist,
 		openDeleteModal,

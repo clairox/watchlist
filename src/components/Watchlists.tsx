@@ -11,7 +11,7 @@ import { useWatchlists } from '../context/watchlistContext';
 //TODO: add local watchlists to db on sign in
 
 const Watchlists = () => {
-	const { watchlists, loadState } = useWatchlists();
+	const { watchlists, watchlistLoadState } = useWatchlists();
 
 	const [content, setContent] = useState(<></>);
 
@@ -24,7 +24,7 @@ const Watchlists = () => {
 
 	// Set page content
 	useEffect(() => {
-		if (loadState === 'loading' || loadState === 'idle') return;
+		if (watchlistLoadState === 'loading' || watchlistLoadState === 'idle') return;
 
 		if (!watchlists?.length) {
 			setContent(
@@ -49,7 +49,7 @@ const Watchlists = () => {
 				</div>
 			);
 		}
-	}, [watchlists, loadState, openCreateModal]);
+	}, [watchlists, watchlistLoadState, openCreateModal]);
 
 	//TODO: make watchlist image column which is equal to the most recently added poster or a custom image
 

@@ -293,14 +293,14 @@ type ModalProps = {
 };
 
 const AddToListModal: React.FunctionComponent<ModalProps> = ({ data, closeModal }) => {
-	const { watchlists, loadState, createWatchlist, addItem } = useWatchlists();
+	const { watchlists, watchlistLoadState, createWatchlist, addItem } = useWatchlists();
 
 	const listSelect: MutableRefObject<HTMLSelectElement | null> = useRef(null);
 
 	const onAddToListFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (loadState === 'loading' || !addItem) return;
+		if (watchlistLoadState === 'loading' || !addItem) return;
 
 		if (!listSelect.current) return;
 
