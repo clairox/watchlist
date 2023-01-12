@@ -1,4 +1,3 @@
-import axios from '../lib/axiosInstance';
 import React, { useState, useCallback } from 'react';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -8,33 +7,27 @@ import { WatchlistItem as WI } from '../../types';
 import { Helmet } from 'react-helmet';
 import { ErrorPage } from './ErrorPage';
 import Button from '../components/Button';
+import { useWatchlists } from '../context/watchlistContext';
+import { useModal } from '../hooks/useModal';
+import ModalWrapper from '../components/ModalWrapper';
 
 type ItemProps = {
 	data: WI;
 	inEditMode: boolean;
 	deleteItem: (itemId: number) => void;
-	setWatched: (itemId: number) => void;
+	setWatched: (itemId: number, watched: boolean) => void;
 };
 
-const WatchlistItem: React.FunctionComponent<ItemProps> = ({
-	data,
-	inEditMode,
-	deleteItem,
-	setWatched,
-}) => {
+const WatchlistItem: React.FunctionComponent<ItemProps> = ({ data, inEditMode, deleteItem, setWatched }) => {
 	const { title, poster_url, release_date, watched } = data;
 
 	return (
 		<div
 			className={`my-3 mx-6 flex flex-row rounded-lg ${
 				watched ? 'bg-green-700' : 'bg-gray-700'
-			} p-4 text-white hover:cursor-pointer ${
-				watched ? 'hover:bg-green-600' : 'hover:bg-gray-600'
-			} md:mx-3`}
+			} p-4 text-white hover:cursor-pointer ${watched ? 'hover:bg-green-600' : 'hover:bg-gray-600'} md:mx-3`}
 			onClick={() => {
-				if (!inEditMode) {
-					setWatched(data.id);
-				}
+				if (!inEditMode) setWatched(data.id, !data.watched);
 			}}
 		>
 			<img
@@ -54,9 +47,7 @@ const WatchlistItem: React.FunctionComponent<ItemProps> = ({
 						// @ts-ignore
 						size="xl"
 						color="white"
-						onClick={() => {
-							deleteItem(data.id);
-						}}
+						onClick={() => deleteItem(data.id)}
 					/>
 				</div>
 			) : (
@@ -69,7 +60,7 @@ const WatchlistItem: React.FunctionComponent<ItemProps> = ({
 type WatchlistProps = {
 	items: WI[];
 	deleteItem: (itemId: number) => void;
-	setWatched: (itemId: number) => void;
+	setWatched: (itemId: number, watched: boolean) => void;
 	editMode: boolean;
 };
 
@@ -118,89 +109,101 @@ const Watchlist = React.memo<WatchlistProps>(props => {
 
 //TODO: save media type to db and show in watchlist
 export const WatchlistPage: React.FunctionComponent = () => {
+	const {
+		getWatchlist,
+		loadState,
+		deleteItem: deleteWatchlistItem,
+		setItemWatched,
+		updateWatchlistName,
+		deleteWatchlist,
+	} = useWatchlists();
+	const { id } = useParams();
+
 	const [items, setItems] = useState<WI[]>([]);
 	const [name, setName] = useState('');
 	const [isDefault, setIsDefault] = useState(false);
 	const [count, setCount] = useState(0);
+	const [isPageLoading, setIsPageLoading] = useState(true);
+
+	useEffect(() => {
+		if (getWatchlist && id && loadState !== 'loading') {
+			getWatchlist(id)
+				.then(watchlist => {
+					if (!watchlist) {
+						setIsPageLoading(false);
+						return;
+					}
+
+					setItems(watchlist.items);
+					setName(watchlist.name);
+					setIsDefault(watchlist.default);
+					setCount(watchlist.items.length);
+					setIsPageLoading(false);
+				})
+				.catch(() => {
+					setIsPageLoading(false);
+					return null;
+				});
+		}
+	}, [getWatchlist, id, loadState]);
+
 	const [editMode, setEditMode] = useState(false);
 	const [editedName, setEditedName] = useState('');
 
 	const [content, setContent] = useState(<></>);
 
-	const [isLoading, setIsLoading] = useState(true);
-
-	const { id } = useParams();
-
 	const navigate = useNavigate();
 
 	const deleteItem = useCallback(
 		async (itemId: number) => {
-			axios
-				.delete(`/watchlists/${id}/items/${itemId}`, {
-					withCredentials: true,
-				})
-				.then(async res => {
-					axios
-						.get(`/watchlists/${id}/itemCount`, {
-							withCredentials: true,
-						})
-						.then(res => setCount(res.data));
-					setItems(items.filter(data => data.id !== itemId));
-				});
+			if (!deleteWatchlistItem || !id) return;
+			deleteWatchlistItem(id, itemId);
 		},
-		[id, items]
+		[deleteWatchlistItem, id]
 	);
 
 	const setWatched = useCallback(
-		(itemId: number) => {
-			const item = items.find(data => data.id === itemId);
-
-			if (!item) return;
-
-			axios
-				.patch(
-					`/watchlists/${id}/items/${itemId}/watched`,
-					{ watched: !item.watched },
-					{ withCredentials: true }
-				)
-				.then(res => {
-					setItems(
-						items.map(data => {
-							if (data.id === itemId) {
-								return {
-									...data,
-									watched: !data.watched,
-								};
-							}
-							return data;
-						})
-					);
-				});
+		(itemId: number, watched: boolean) => {
+			if (!setItemWatched || !id) return;
+			setItemWatched(id, itemId, watched);
 		},
-		[id, items]
+		[id, setItemWatched]
 	);
 
-	// Get watchlist data on page load
+	const onEditName = useCallback(
+		async (e: React.FormEvent<HTMLFormElement>) => {
+			e.preventDefault();
+			if (!updateWatchlistName || !id) return;
+
+			if (!editedName) {
+				setEditedName('');
+				setEditMode(false);
+				return;
+			}
+
+			await updateWatchlistName(id, editedName);
+
+			setEditedName('');
+			setEditMode(false);
+		},
+		[editedName, id, updateWatchlistName]
+	);
+
+	const onDeleteWatchlist = useCallback(async () => {
+		if (isDefault || !id || !deleteWatchlist) return;
+		await deleteWatchlist(id);
+		navigate('/');
+	}, [deleteWatchlist, id, isDefault, navigate]);
+
+	const {
+		isOpen: isDeleteModalOpen,
+		openModal: openDeleteModal,
+		closeModal: closeDeleteModal,
+		Modal: DeleteModal,
+	} = useModal();
+
 	useEffect(() => {
-		setIsLoading(true);
-
-		axios
-			.get(`/watchlists/${id}?populated=true`, {
-				withCredentials: true,
-			})
-			.then(res => {
-				setName(res.data.name);
-				setItems(res.data.items);
-				setIsDefault(res.data.default);
-				setCount(res.data.item_count);
-
-				setIsLoading(false);
-			})
-			.catch(() => setIsLoading(false));
-	}, [id]);
-
-	useEffect(() => {
-		if (isLoading) return;
+		if (isPageLoading) return;
 
 		//TODO: useToggle hook
 		const watchlistProps = {
@@ -215,25 +218,7 @@ export const WatchlistPage: React.FunctionComponent = () => {
 				<div>
 					<div className="mx-7 flex max-w-[1500px] flex-col justify-between gap-4 sm:flex-row sm:gap-0 2xl:mx-auto">
 						{editMode ? (
-							<form
-								className="flex flex-grow flex-row "
-								onSubmit={e => {
-									e.preventDefault();
-									axios
-										.patch(
-											`/watchlists/${id}/name`,
-											{
-												name: editedName,
-											},
-											{ withCredentials: true }
-										)
-										.then(res => {
-											setEditedName('');
-											setEditMode(false);
-											setName(res.data);
-										});
-								}}
-							>
+							<form className="flex flex-grow flex-row " onSubmit={onEditName}>
 								<input
 									className="w-full max-w-[550px] border-b-[1px] border-gray-100 bg-gray-800 pr-8 text-2xl font-bold text-gray-100 focus:outline-none md:w-2/3 md:text-3xl lg:w-1/2"
 									type="text"
@@ -267,9 +252,7 @@ export const WatchlistPage: React.FunctionComponent = () => {
 								<h1 className="mr-4 inline-block text-2xl font-bold text-gray-100 md:text-3xl">
 									{name}
 								</h1>
-								<span className="mr-4 inline-block text-2xl font-bold text-gray-400">
-									{count}
-								</span>
+								<span className="mr-4 inline-block text-2xl font-bold text-gray-400">{count}</span>
 							</div>
 						)}
 						<div className="flex flex-row justify-end gap-4">
@@ -285,19 +268,7 @@ export const WatchlistPage: React.FunctionComponent = () => {
 								</Button>
 							)}
 							{!editMode && (
-								<Button
-									level="danger"
-									disabled={isDefault}
-									onClick={() => {
-										if (isDefault) return;
-
-										axios
-											.delete(`/watchlists/${id}/`, {
-												withCredentials: true,
-											})
-											.then(() => navigate('/lists'));
-									}}
-								>
+								<Button level="danger" disabled={isDefault} onClick={openDeleteModal}>
 									<FontAwesomeIcon className="pr-2" icon={faTrashCan} size="1x" />
 									<span className="text-lg">Delete</span>
 								</Button>
@@ -311,7 +282,6 @@ export const WatchlistPage: React.FunctionComponent = () => {
 			setContent(<ErrorPage code={404} message={'Page Not Found'} />);
 		}
 	}, [
-		isLoading,
 		editMode,
 		name,
 		count,
@@ -322,6 +292,11 @@ export const WatchlistPage: React.FunctionComponent = () => {
 		id,
 		navigate,
 		setWatched,
+		loadState,
+		onEditName,
+		onDeleteWatchlist,
+		openDeleteModal,
+		isPageLoading,
 	]);
 
 	return (
@@ -330,6 +305,25 @@ export const WatchlistPage: React.FunctionComponent = () => {
 				<title>{name ? `${name} | Watchlist` : 'Watchlist'}</title>
 			</Helmet>
 			{content}
+			{isDeleteModalOpen && (
+				<DeleteModal>
+					<ModalWrapper>
+						<div className="flex h-fit flex-col items-start justify-center gap-6 p-8">
+							<p>
+								Are you sure you want to delete <span className="font-bold">{name}</span>?
+							</p>
+							<div className="flex w-full flex-row justify-center gap-3">
+								<Button theme="light" onClick={closeDeleteModal}>
+									<span className="text-md">Cancel</span>
+								</Button>
+								<Button level="danger" theme="light" onClick={onDeleteWatchlist}>
+									<span className="text-md">Delete</span>
+								</Button>
+							</div>
+						</div>
+					</ModalWrapper>
+				</DeleteModal>
+			)}
 		</div>
 	);
 };

@@ -22,7 +22,7 @@ const Button: React.FunctionComponent<ButtonProps> = ({
 
 		switch (theme) {
 			case 'light':
-				return 'bg-gray-300 text-black';
+				return 'bg-gray-500 text-black';
 			default:
 				return 'bg-gray-700 text-gray-100';
 		}

@@ -5,6 +5,7 @@ import { faRightFromBracket, faMagnifyingGlass, faUser } from '@fortawesome/free
 import { useAuth } from '../context/authContext';
 import { useState } from 'react';
 import { SearchBar } from './SearchBar';
+import { useWatchlists } from '../context/watchlistContext';
 
 //TODO: clear localstorage and reload on logout
 type Props = {
@@ -29,11 +30,14 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 		}
 	};
 
+	const { clearWatchlists } = useWatchlists();
+
 	const handleLogoutButtonClick = async () => {
-		if (!logout) return;
+		if (!logout || !clearWatchlists) return;
 
 		await logout();
-		navigate(0);
+		clearWatchlists();
+		navigate('/');
 	};
 
 	return (
@@ -87,7 +91,7 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 				</>
 
 				<div
-					className={`mr-4 flex min-w-[91px] flex-row justify-end gap-7 lg:mr-10 lg:min-w-[207px] ${
+					className={`mr-4 flex min-w-[91px] flex-row justify-end gap-10 lg:mr-10 lg:min-w-[207px] ${
 						searchBarOpen ? 'hidden' : ''
 					} sm:flex`}
 					id="nav-right"

@@ -21,7 +21,6 @@ export interface Watchlist {
 	owner_id: string;
 	name: string;
 	default: boolean;
-	poster_url?: string;
 }
 
 export interface WatchlistItem {
@@ -30,5 +29,17 @@ export interface WatchlistItem {
 	release_date: number;
 	poster_url: string;
 	watched: boolean;
-	favorite: boolean;
+	watchlist_id: string;
+	createdAt: Date;
 }
+
+export interface WatchlistWithItems {
+	name: string;
+	owner_id: string;
+	id: string;
+	default: boolean;
+	createdAt: Date;
+	items: WatchlistItem[];
+}
+
+export type LoadState = 'idle' | 'loading' | 'succeeded' | 'failed';

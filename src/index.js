@@ -4,12 +4,15 @@ import './assets/index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { ProvideAuth } from './context/authContext';
+import { ProvideWatchlists } from './context/watchlistContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 	<BrowserRouter>
 		<ProvideAuth>
-			<App />
+			<ProvideWatchlists>
+				<App />
+			</ProvideWatchlists>
 		</ProvideAuth>
 	</BrowserRouter>
 );

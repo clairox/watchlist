@@ -1,106 +1,37 @@
-import axios from '../lib/axiosInstance';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Watchlist } from '../../types';
-import { useAuth } from '../context/authContext';
+import React, { useEffect, useState } from 'react';
+import { WatchlistWithItems } from '../../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { WatchlistPreviewSlider } from './WatchlistPreviewSlider';
 import Button from './Button';
-import sortWatchlists from '../utils/sortWatchlists';
+import { useModal } from '../hooks/useModal';
+import ModalWrapper from './ModalWrapper';
+import { useWatchlists } from '../context/watchlistContext';
 
 //TODO: add local watchlists to db on sign in
 
 const Watchlists = () => {
-	const { user, isLoading: isUserLoading } = useAuth();
+	const { watchlists, loadState } = useWatchlists();
 
-	const [watchlists, setWatchlists] = useState<Watchlist[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
 	const [content, setContent] = useState(<></>);
 
-	const getWatchlists = useCallback(() => {
-		setIsLoading(true);
-
-		if (!user) {
-			setIsLoading(false);
-			return JSON.parse(localStorage.getItem('watchlists') || '[]');
-		} else {
-			setIsLoading(false);
-			return JSON.parse(localStorage.getItem('watchlists') || '[]');
-		}
-	}, [user]);
-
-	const _setWatchlists = useCallback(
-		(watchlists: Watchlist[]) => {
-			localStorage.setItem('watchlists', JSON.stringify(watchlists));
-			setWatchlists(getWatchlists());
-		},
-		[getWatchlists]
-	);
-
-	const createWatchlist = useCallback(() => {
-		setIsLoading(true);
-
-		if (!user) {
-			const newList: Watchlist = {
-				id: watchlists.length.toString(), // TODO: change id to serial in db
-				owner_id: 'local',
-				name: 'New watchlist',
-				default: false,
-				createdAt: new Date(),
-			};
-
-			_setWatchlists([...watchlists, newList]);
-			setIsLoading(false);
-		} else {
-			axios
-				.post(
-					`/watchlists/`,
-					{},
-					{
-						withCredentials: true,
-					}
-				)
-				.then(res => {
-					const newList = res.data;
-					_setWatchlists([...watchlists, newList]);
-					setIsLoading(false);
-				});
-		}
-	}, [user, watchlists, _setWatchlists]);
-
-	// Get watchlists on page load
-	useEffect(() => {
-		if (isUserLoading || watchlists.length) return;
-
-		setIsLoading(true);
-
-		if (!user) {
-			setWatchlists(JSON.parse(localStorage.getItem('watchlists') || '[]'));
-			setIsLoading(false);
-		} else {
-			axios
-				.get(`/watchlists/`, {
-					withCredentials: true,
-				})
-				.then(res => {
-					_setWatchlists(res.data);
-					setIsLoading(false);
-				});
-		}
-	}, [user, isUserLoading, watchlists, _setWatchlists]);
+	const {
+		isOpen: isCreateModalOpen,
+		openModal: openCreateModal,
+		closeModal: closeCreateModal,
+		Modal: CreateModal,
+	} = useModal();
 
 	// Set page content
 	useEffect(() => {
-		if (isLoading) return;
+		if (loadState === 'loading' || loadState === 'idle') return;
 
-		if (!watchlists.length) {
+		if (!watchlists?.length) {
 			setContent(
 				<div className="mt-10">
-					<h3 className="text-3xl font-bold text-gray-400">
-						You don't have any watchlists
-					</h3>
+					<h3 className="text-3xl font-bold text-gray-400">You don't have any watchlists</h3>
 					<div className="mt-4">
-						<NewWatchlistButton onClick={createWatchlist} />
+						<NewWatchlistButton onClick={openCreateModal} />
 					</div>
 				</div>
 			);
@@ -108,21 +39,32 @@ const Watchlists = () => {
 			setContent(
 				<div>
 					<div className="flex w-full justify-end gap-4">
-						<NewWatchlistButton onClick={createWatchlist} />
+						<NewWatchlistButton onClick={openCreateModal} />
 					</div>
 					<ul>
-						{sortWatchlists(watchlists).map((data: Watchlist, i) => (
+						{watchlists.map((data: WatchlistWithItems, i) => (
 							<WatchlistPreviewSlider data={data} key={data.id} />
 						))}
 					</ul>
 				</div>
 			);
 		}
-	}, [watchlists, isLoading, createWatchlist]);
+	}, [watchlists, loadState, openCreateModal]);
 
 	//TODO: make watchlist image column which is equal to the most recently added poster or a custom image
 
-	return <div>{content}</div>;
+	return (
+		<div>
+			{content}
+			{isCreateModalOpen && (
+				<CreateModal>
+					<ModalWrapper>
+						<CreateWatchlistModal close={closeCreateModal} />
+					</ModalWrapper>
+				</CreateModal>
+			)}
+		</div>
+	);
 };
 
 type ButtonProps = {
@@ -135,6 +77,57 @@ const NewWatchlistButton: React.FunctionComponent<ButtonProps> = ({ onClick }) =
 			<FontAwesomeIcon className="pr-2" icon={faPlus} size="1x" />
 			<span className="text-lg">New</span>
 		</Button>
+	);
+};
+
+type CreateWatchlistProps = {
+	close: () => void;
+};
+
+const CreateWatchlistModal: React.FunctionComponent<CreateWatchlistProps> = ({ close }) => {
+	const [name, setName] = useState('');
+	const [isDefault, setIsDefault] = useState(false);
+
+	const { createWatchlist } = useWatchlists();
+
+	return (
+		<div className="flex h-fit flex-col items-start justify-center gap-6 p-8">
+			<h2 className="mb-2 w-full text-center text-2xl font-bold">Create a watchlist</h2>
+			<form
+				onSubmit={e => {
+					e.preventDefault();
+
+					if (!createWatchlist) return;
+
+					createWatchlist(name, isDefault);
+					close();
+				}}
+			>
+				<input
+					className="max-w-96 mb-4 flex h-8 w-full flex-row rounded px-2 text-black sm:min-w-[288px]"
+					type="text"
+					value={name}
+					onChange={e => setName(e.target.value)}
+					placeholder="Title"
+					autoFocus={true}
+				/>
+				<div>
+					<input
+						className="mr-2 mb-8 hover:cursor-pointer"
+						type="checkbox"
+						checked={isDefault}
+						onChange={e => setIsDefault(e.target.checked)}
+					/>
+					<label className="hover:cursor-pointer" onClick={() => setIsDefault(!isDefault)}>
+						Set as default? (This will unset current default.)
+					</label>
+				</div>
+				<Button type="submit" theme="light">
+					<FontAwesomeIcon className="pr-2" icon={faPlus} size="sm" />
+					<span className="text-md">Add</span>
+				</Button>
+			</form>
+		</div>
 	);
 };
 

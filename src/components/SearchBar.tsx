@@ -4,14 +4,10 @@ import { searchMovie } from '../services/tmdb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCirclePlus, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useRef } from 'react';
-import { Watchlist } from '../../types';
 import { useModal } from '../hooks/useModal';
 import ModalWrapper from './ModalWrapper';
-import { useAuth } from '../context/authContext';
-import axios from '../lib/axiosInstance';
-import { useNavigate } from 'react-router';
 import Button from './Button';
-import sortWatchlists from '../utils/sortWatchlists';
+import { useWatchlists } from '../context/watchlistContext';
 
 //////////////////////////////
 // Search Bar
@@ -22,10 +18,7 @@ type SearchProps = {
 	setSearchBarOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-export const SearchBar: React.FunctionComponent<SearchProps> = ({
-	searchBarOpen,
-	setSearchBarOpen,
-}) => {
+export const SearchBar: React.FunctionComponent<SearchProps> = ({ searchBarOpen, setSearchBarOpen }) => {
 	const PLACEHOLDER_TEXT = 'Find a movie, TV series, etc...';
 
 	const [canShowResults, setCanShowResults] = useState(false);
@@ -228,11 +221,7 @@ type ResultItemProps = {
 	closeResults: () => void;
 };
 
-const ResultsItem: React.FunctionComponent<ResultItemProps> = ({
-	openAddToListModal,
-	item,
-	closeResults,
-}) => {
+const ResultsItem: React.FunctionComponent<ResultItemProps> = ({ openAddToListModal, item, closeResults }) => {
 	let { id, title, name, overview, poster_path, release_date, first_air_date } = item;
 
 	if (item.media_type === 'tv') {
@@ -260,9 +249,7 @@ const ResultsItem: React.FunctionComponent<ResultItemProps> = ({
 						<h1 className="h-8 text-2xl font-bold line-clamp-1">{title}</h1>
 						<div className="mb-1 block">
 							{release_date ? (
-								<h4 className="text-md mr-2 inline-block font-bold">
-									{release_date.slice(0, 4)}
-								</h4>
+								<h4 className="text-md mr-2 inline-block font-bold">{release_date.slice(0, 4)}</h4>
 							) : (
 								<></>
 							)}
@@ -282,15 +269,9 @@ const ResultsItem: React.FunctionComponent<ResultItemProps> = ({
 									openAddToListModal({
 										id,
 										title,
-										posterURL: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${poster_path}`,
-										releaseDate: release_date.slice(0, 4) || null,
+										poster_url: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${poster_path}`,
+										release_date: release_date.slice(0, 4) || null,
 									});
-									// openAddToListDialog({
-									// 	id,
-									// 	title,
-									// 	posterURL: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${poster_path}`,
-									// 	releaseDate: release_date.slice(0, 4) || null,
-									// });
 									closeResults();
 								}}
 							/>
@@ -312,40 +293,29 @@ type ModalProps = {
 };
 
 const AddToListModal: React.FunctionComponent<ModalProps> = ({ data, closeModal }) => {
-	const [watchlists, setWatchlists] = useState<Watchlist[]>([]);
-
-	const { user } = useAuth();
-
-	useEffect(() => {
-		axios
-			.get(`/watchlists/`, { withCredentials: true })
-			.then(res => {
-				setWatchlists(sortWatchlists(res.data));
-			})
-			.catch(err => console.error(err));
-	}, [user]);
-
-	const navigate = useNavigate();
+	const { watchlists, loadState, createWatchlist, addItem } = useWatchlists();
 
 	const listSelect: MutableRefObject<HTMLSelectElement | null> = useRef(null);
 
 	const onAddToListFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		if (loadState === 'loading' || !addItem) return;
+
 		if (!listSelect.current) return;
 
-		const watchlistId = listSelect.current.value;
+		if (listSelect.current.value === 'new') {
+			if (!createWatchlist) return;
 
-		await axios
-			.put(`/watchlists/${watchlistId}/items/`, data, {
-				withCredentials: true,
-			})
-			.then(() => navigate(0))
-			.catch(err => {
-				if (err.response.status === 409) {
-					navigate(0);
-				}
-			});
+			const newList = await createWatchlist('', false);
+
+			if (newList) {
+				addItem(newList.id, data);
+			}
+		} else {
+			const watchlistId = listSelect.current.value;
+			addItem(watchlistId, data);
+		}
 
 		closeModal();
 	};
@@ -353,9 +323,9 @@ const AddToListModal: React.FunctionComponent<ModalProps> = ({ data, closeModal 
 	return (
 		<ModalWrapper>
 			<div className="flex h-fit items-start justify-center gap-6 p-8">
-				{data.posterURL ? (
+				{data.poster_url ? (
 					<img
-						src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.posterURL}`}
+						src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.poster_url}`}
 						width="140px"
 						alt="movie poster"
 					/>
@@ -364,10 +334,7 @@ const AddToListModal: React.FunctionComponent<ModalProps> = ({ data, closeModal 
 						<p className="px-2 text-3xl font-bold text-gray-600">No Image</p>
 					</div>
 				)}
-				<form
-					className="relative bottom-[6px] flex flex-col items-start"
-					onSubmit={onAddToListFormSubmit}
-				>
+				<form className="relative bottom-[6px] flex flex-col items-start" onSubmit={onAddToListFormSubmit}>
 					<h3 className="mb-4 w-fit text-2xl font-bold line-clamp-2">{data.title}</h3>
 					<p className="mb-4 ">Choose a list to add to</p>
 					<select
@@ -375,15 +342,16 @@ const AddToListModal: React.FunctionComponent<ModalProps> = ({ data, closeModal 
 						id="lists"
 						name="lists"
 						ref={listSelect}
+						defaultValue={watchlists?.find(l => l.default)?.id || ''}
 					>
-						{watchlists.map(i => {
-							const valueName = i.name.replace(' ', '-');
+						{watchlists?.map(i => {
 							return (
-								<option key={valueName} value={i.id}>
-									{i.name}
+								<option key={i.id} value={i.id}>
+									{i.default ? i.name + ' (default)' : i.name}
 								</option>
 							);
 						})}
+						<option value={'new'}>+ New watchlist</option>
 					</select>
 					<div className="">
 						<Button type="submit" theme="light">
