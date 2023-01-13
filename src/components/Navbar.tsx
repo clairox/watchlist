@@ -102,7 +102,7 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 				</>
 
 				<div
-					className={`mr-4 flex min-w-[91px] flex-row justify-end gap-6 lg:mr-10 lg:min-w-[207px] ${
+					className={`mr-4 flex min-w-[150px] flex-row justify-end gap-6 sm:min-w-[91px] lg:mr-10 lg:min-w-[207px] ${
 						searchBarOpen ? 'hidden' : ''
 					} sm:flex`}
 					id="nav-right"
@@ -141,7 +141,7 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 						</div>
 					) : (
 						<div
-							className="my-auto flex flex-row items-center rounded border-[1px] border-white py-1 px-2 text-xl font-bold hover:cursor-pointer hover:bg-gray-600"
+							className="my-auto flex flex-row items-center rounded border-[1px] border-white py-1 px-2 text-lg font-bold hover:cursor-pointer hover:bg-gray-600"
 							onClick={handleLoginButtonClick}
 						>
 							Log In
