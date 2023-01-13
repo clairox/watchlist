@@ -111,14 +111,14 @@ const CreateWatchlistModal: React.FunctionComponent<CreateWatchlistProps> = ({ c
 					placeholder="Title"
 					autoFocus={true}
 				/>
-				<div>
+				<div className="mb-8">
 					<input
-						className="mr-2 mb-8 hover:cursor-pointer"
+						className="mr-2 hover:cursor-pointer"
 						type="checkbox"
 						checked={isDefault}
 						onChange={e => setIsDefault(e.target.checked)}
 					/>
-					<label className="hover:cursor-pointer" onClick={() => setIsDefault(!isDefault)}>
+					<label className="leading-6 hover:cursor-pointer" onClick={() => setIsDefault(!isDefault)}>
 						Set as default? (This will unset current default.)
 					</label>
 				</div>
