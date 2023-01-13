@@ -99,7 +99,7 @@ export const SearchBar: React.FunctionComponent<SearchProps> = ({ searchBarOpen,
 				className={`ml-4 flex flex-row lg:ml-10 ${searchBarOpen ? '' : 'hidden'} sm:hidden`}
 				id="close-search-bar"
 			>
-				<div className="leading-[56px]">
+				<div className="flex items-center">
 					<FontAwesomeIcon
 						icon={faXmark}
 						size="lg"
@@ -120,7 +120,7 @@ export const SearchBar: React.FunctionComponent<SearchProps> = ({ searchBarOpen,
 					onSubmit={e => e.preventDefault()}
 				>
 					<input
-						className={`mt-2.5 w-full appearance-none rounded bg-gray-800 py-[7px] px-3 leading-tight text-gray-100 focus:outline-none ${
+						className={`mt-[15px] w-full appearance-none rounded bg-gray-800 py-[7px] px-3 leading-tight text-gray-100 focus:outline-none ${
 							searchBarOpen ? '' : 'hidden'
 						} sm:inline-block`}
 						id="search-bar"
