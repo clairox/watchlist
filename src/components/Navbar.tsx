@@ -52,12 +52,10 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 	};
 
 	return (
-		<nav className="fixed z-40 h-16 w-full bg-gray-700 drop-shadow-sm">
-			<div className="mx-auto flex h-full max-w-screen-2xl flex-row justify-between text-gray-100">
+		<nav className="fixed z-40 h-16 w-full bg-gray-700 px-4 drop-shadow-sm">
+			<div className="mx-auto flex h-full flex-row justify-between text-gray-100">
 				<div
-					className={`ml-4 flex min-w-[91px] flex-row lg:ml-10 lg:min-w-[207px] ${
-						searchBarOpen ? 'hidden' : ''
-					} sm:flex`}
+					className={`flex min-w-[91px] flex-row lg:min-w-[207px] ${searchBarOpen ? 'hidden' : ''} sm:flex`}
 					id="nav-left"
 				>
 					{/* <div className="pr-6 leading-[56px] lg:hidden" ref={menuButton}>
@@ -102,7 +100,7 @@ export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenu
 				</>
 
 				<div
-					className={`mr-4 flex min-w-[150px] flex-row justify-end gap-6 sm:min-w-[91px] lg:mr-10 lg:min-w-[207px] ${
+					className={`flex min-w-[150px] flex-row justify-end gap-6 sm:min-w-[91px] lg:min-w-[207px] ${
 						searchBarOpen ? 'hidden' : ''
 					} sm:flex`}
 					id="nav-right"
@@ -188,12 +186,22 @@ const UserMenu: React.FunctionComponent<UserMenuProps> = ({ firstName, logout, c
 		};
 	}, [handleMouseDown]);
 
+	const navigate = useNavigate();
+
+	const onSettingsClicked = () => {
+		navigate('/settings');
+		close();
+	};
+
 	return (
-		<div className="absolute top-[50px] right-[30px] w-52 rounded bg-gray-700 py-4 text-left shadow-lg shadow-black">
+		<div className="absolute top-[56px] right-[10px] w-52 rounded bg-gray-700 py-4 text-left shadow-lg shadow-gray-900">
 			<div className="flex h-8 items-center px-4 pb-2">
 				<h4 className="truncate text-xl font-bold">{firstName}</h4>
 			</div>
-			<div className="flex h-12 items-center pl-4 hover:cursor-pointer hover:bg-gray-600">
+			<div
+				className="flex h-12 items-center pl-4 hover:cursor-pointer hover:bg-gray-600"
+				onClick={onSettingsClicked}
+			>
 				<FontAwesomeIcon
 					icon={faGear}
 					// @ts-ignore
@@ -202,7 +210,7 @@ const UserMenu: React.FunctionComponent<UserMenuProps> = ({ firstName, logout, c
 				/>
 				<p>Settings</p>
 			</div>
-			<div className="flex h-12 h-8 items-center pl-4 hover:cursor-pointer hover:bg-gray-600">
+			{/* <div className="flex h-12 h-8 items-center pl-4 hover:cursor-pointer hover:bg-gray-600">
 				<FontAwesomeIcon
 					icon={faCircleHalfStroke}
 					// @ts-ignore
@@ -210,7 +218,7 @@ const UserMenu: React.FunctionComponent<UserMenuProps> = ({ firstName, logout, c
 					className="mr-3"
 				/>
 				<p>Light Mode</p>
-			</div>
+			</div> */}
 			<div className="flex h-12 h-8 items-center pl-4 hover:cursor-pointer hover:bg-gray-600" onClick={logout}>
 				<FontAwesomeIcon
 					icon={faRightFromBracket}
