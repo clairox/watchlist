@@ -3,8 +3,8 @@ import React from 'react';
 type ButtonProps = {
 	children: React.ReactNode;
 	type?: 'button' | 'submit' | 'reset' | undefined;
-	theme?: 'light' | 'dark';
-	level?: 'normal' | 'danger';
+	theme?: 'light' | 'dark' | 'red';
+	level?: 'normal' | 'danger' | 'cancel' | 'edit';
 	disabled?: boolean;
 	onClick?: (event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
@@ -23,6 +23,8 @@ const Button: React.FunctionComponent<ButtonProps> = ({
 		switch (theme) {
 			case 'light':
 				return 'bg-gray-500 text-black';
+			case 'red':
+				return 'bg-red-600 text-white';
 			default:
 				return 'bg-gray-700 text-gray-100';
 		}
@@ -33,7 +35,11 @@ const Button: React.FunctionComponent<ButtonProps> = ({
 
 		switch (level) {
 			case 'danger':
-				return 'hover:bg-red-600 hover:text-white';
+				return theme === 'red' ? 'hover:bg-red-700 hover:text-white' : 'hover:bg-red-600 hover:text-white';
+			case 'cancel':
+				return 'hover:bg-gray-600 hover:text-white';
+			case 'edit':
+				return 'hover:bg-cyan-700 hover:text-white';
 			default:
 				return 'hover:bg-green-500 hover:text-black';
 		}
