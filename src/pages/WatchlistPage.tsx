@@ -262,7 +262,7 @@ export const WatchlistPage: React.FunctionComponent = () => {
 									<span className="text-lg">Finish</span>
 								</Button>
 							) : (
-								<Button onClick={() => setEditMode(true)}>
+								<Button level="edit" onClick={() => setEditMode(true)}>
 									<FontAwesomeIcon className="pr-2" icon={faPencil} size="1x" />
 									<span className="text-lg">Edit</span>
 								</Button>
@@ -312,8 +312,8 @@ export const WatchlistPage: React.FunctionComponent = () => {
 							<p>
 								Are you sure you want to delete <span className="font-bold">{name}</span>?
 							</p>
-							<div className="flex w-full flex-row justify-center gap-3">
-								<Button theme="light" onClick={closeDeleteModal}>
+							<div className="flex w-full flex-row justify-center gap-4">
+								<Button theme="light" level="cancel" onClick={closeDeleteModal}>
 									<span className="text-md">Cancel</span>
 								</Button>
 								<Button level="danger" theme="light" onClick={onDeleteWatchlist}>
