@@ -18,6 +18,9 @@ const AuthContext = createContext<{
 	login?: (data: LoginData) => Promise<LoginResponse>;
 	signup?: (data: SignupData) => Promise<LoginResponse>;
 	logout?: () => void;
+	editAccountName?: (data: { firstName: string; lastName: string }) => Promise<{ status: number }>;
+	editAccountEmail?: (data: { email: string }) => Promise<{ status: number }>;
+	editAccountPassword?: (data: { password: string }) => Promise<{ status: number }>;
 	deleteAccount?: () => void;
 	isEmailTaken?: (email: string) => Promise<boolean>;
 	isLoading?: boolean;
@@ -86,9 +89,53 @@ const useProvideAuth = () => {
 		});
 	};
 
+	const editAccountName = async (data: { firstName: string; lastName: string }): Promise<{ status: number }> => {
+		return await axios
+			.patch('/users/sessionUser/name', { firstname: data.firstName, lastname: data.lastName }, reqConfig)
+			.then(res => {
+				setUser(res.data);
+				localStorage.setItem('user', res.data);
+				setIsLoading(false);
+				return { status: res.status };
+			})
+			.catch(err => {
+				setIsLoading(false);
+				return { status: err.response.status };
+			});
+	};
+
+	const editAccountEmail = async (data: { email: string }): Promise<{ status: number }> => {
+		return await axios
+			.patch('/users/sessionUser/email', data, reqConfig)
+			.then(res => {
+				setUser(res.data);
+				localStorage.setItem('user', res.data);
+				setIsLoading(false);
+				return { status: res.status };
+			})
+			.catch(err => {
+				setIsLoading(false);
+				return { status: err.response.status };
+			});
+	};
+
+	const editAccountPassword = async (data: { password: string }): Promise<{ status: number }> => {
+		return await axios
+			.patch('/users/sessionUser/password', data, reqConfig)
+			.then(res => {
+				setUser(res.data);
+				localStorage.setItem('user', res.data);
+				setIsLoading(false);
+				return { status: res.status };
+			})
+			.catch(err => {
+				setIsLoading(false);
+				return { status: err.response.status };
+			});
+	};
+
 	const deleteAccount = async () => {
 		return await axios.delete(`/users/sessionUser`, reqConfig).then(res => {
-			console.log(res.data);
 			setUser(null);
 			localStorage.removeItem('user');
 			localStorage.removeItem('watchlists');
@@ -139,6 +186,9 @@ const useProvideAuth = () => {
 		login,
 		signup,
 		logout,
+		editAccountName,
+		editAccountEmail,
+		editAccountPassword,
 		deleteAccount,
 		isEmailTaken,
 		isLoading,
