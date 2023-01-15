@@ -42,9 +42,10 @@ const useProvideWatchlists = () => {
 
 	const setWatchlists = (wl: WatchlistWithItems[]) => {
 		const defaultList = wl.find(l => l.default);
-		const rest = wl.filter(l => !l.default);
+		const empty = wl.filter(l => l.items.length === 0);
+		const rest = wl.filter(l => !l.default && l.items.length > 0);
 
-		const sorted = rest
+		const sorted1 = rest
 			.map(l => ({ ...l, createdAt: new Date(l.createdAt) }))
 			.sort((a: WatchlistWithItems, b: WatchlistWithItems) => {
 				const nameA = a.name.toUpperCase();
@@ -61,7 +62,24 @@ const useProvideWatchlists = () => {
 				return 0;
 			});
 
-		_setWatchlists(defaultList ? [defaultList, ...sorted] : sorted);
+		const sorted2 = empty
+			.map(l => ({ ...l, createdAt: new Date(l.createdAt) }))
+			.sort((a: WatchlistWithItems, b: WatchlistWithItems) => {
+				const nameA = a.name.toUpperCase();
+				const nameB = b.name.toUpperCase();
+				if (nameA < nameB) {
+					return -1;
+				}
+				if (nameA > nameB) {
+					return 1;
+				}
+				if (nameA === nameB) {
+					return +b.createdAt - +a.createdAt;
+				}
+				return 0;
+			});
+
+		_setWatchlists(defaultList ? [defaultList, ...sorted1, ...sorted2] : [...sorted1, ...sorted2]);
 	};
 
 	const getWatchlist = async (id: string): Promise<WatchlistWithItems | null> => {
