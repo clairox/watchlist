@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
 import { Watchlist, WatchlistItem } from '../../types';
 import { useWatchlists } from '../context/watchlistContext';
+import add from '../assets/add.png';
 
 type SliderItem = WatchlistItem & {
 	sliderItemId?: string;
@@ -375,7 +376,18 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 						</ul>
 					</>
 				) : (
-					<div></div>
+					<div className="text-left">
+						<li
+							className="inline-block flex w-[25%] items-center justify-center bg-transparent px-1 text-white opacity-50 hover:cursor-pointer hover:opacity-100 md:w-[16.6666666%] lg:w-[14.2857143%] xl:w-[11.1111111%] 2xl:w-[10%]"
+							onClick={() => {
+								const searchBar = document.getElementById('search-bar') as HTMLInputElement;
+
+								searchBar?.focus();
+							}}
+						>
+							<img className="w-fit rounded-lg" src={add} alt="movie poster" />
+						</li>
+					</div>
 				)}
 			</div>
 		</div>
