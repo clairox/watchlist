@@ -39,7 +39,7 @@ export const LoginPage = () => {
 					e.preventDefault();
 					if (!login) {
 						setInvalidLoginWarning(
-							<div className="mb-4 w-full rounded bg-red-500 p-1 px-5 text-white shadow-sm ">
+							<div className="mb-4 w-full rounded bg-red-600 p-1 px-5 text-white shadow-sm ">
 								<p>Something went wrong. Please try again.</p>
 							</div>
 						);
@@ -53,7 +53,7 @@ export const LoginPage = () => {
 					}).then(res => {
 						if (res.status === 401) {
 							setInvalidLoginWarning(
-								<div className="mb-4 w-full rounded bg-red-500 p-1 px-5 text-white shadow-sm ">
+								<div className="mb-4 w-full rounded bg-red-600 p-1 px-5 text-white shadow-sm ">
 									<p>Email or password incorrect. Please try again.</p>
 								</div>
 							);
@@ -69,7 +69,7 @@ export const LoginPage = () => {
 						{invalidLoginWarning}
 						<div className="mb-6 w-full">
 							<input
-								className="w-full appearance-none rounded border-2 border-gray-600 bg-gray-600 py-3 px-4 leading-tight text-gray-200 focus:border-gray-500 focus:bg-gray-500 focus:outline-none"
+								className="w-full appearance-none rounded bg-gray-800 py-3 px-4 leading-tight text-white focus:bg-gray-900 focus:outline-none"
 								type="text"
 								name="iemail"
 								id="iemail"
@@ -80,7 +80,7 @@ export const LoginPage = () => {
 						</div>
 						<div className="mb-6 w-full">
 							<input
-								className="w-full appearance-none rounded border-2 border-gray-600 bg-gray-600 py-3 px-4 leading-tight text-gray-200 focus:border-gray-500 focus:bg-gray-500 focus:outline-none"
+								className="w-full appearance-none rounded bg-gray-800 py-3 px-4 leading-tight text-white focus:bg-gray-900 focus:outline-none"
 								type="password"
 								name="ipassword"
 								id="ipassword"

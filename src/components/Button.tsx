@@ -5,6 +5,7 @@ type ButtonProps = {
 	type?: 'button' | 'submit' | 'reset' | undefined;
 	theme?: 'light' | 'dark' | 'red';
 	level?: 'normal' | 'danger' | 'cancel' | 'edit';
+	shape?: 'round' | 'square';
 	disabled?: boolean;
 	onClick?: (event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 };
@@ -14,6 +15,7 @@ const Button: React.FunctionComponent<ButtonProps> = ({
 	type,
 	theme = 'dark',
 	level = 'normal',
+	shape = 'round',
 	disabled = false,
 	onClick,
 }) => {
@@ -45,6 +47,15 @@ const Button: React.FunctionComponent<ButtonProps> = ({
 		}
 	};
 
+	const shapeStyle = () => {
+		switch (shape) {
+			case 'square':
+				return 'rounded';
+			default:
+				return 'rounded-full';
+		}
+	};
+
 	const disabledStyle = () => {
 		switch (disabled) {
 			case true:
@@ -55,7 +66,7 @@ const Button: React.FunctionComponent<ButtonProps> = ({
 	};
 	return (
 		<button
-			className={`rounded-full ${themeStyle()} ${levelStyle()} ${disabledStyle()} py-2  px-5 text-gray-100`}
+			className={`${shapeStyle()} ${themeStyle()} ${levelStyle()} ${disabledStyle()} py-2  px-5 text-gray-100`}
 			type={type}
 			disabled={disabled}
 			onClick={onClick}

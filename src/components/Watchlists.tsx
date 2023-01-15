@@ -9,6 +9,7 @@ import ModalWrapper from './ModalWrapper';
 import { useWatchlists } from '../context/watchlistContext';
 
 //TODO: add local watchlists to db on sign in
+//TODO: add set default in edit mode
 
 const Watchlists = () => {
 	const { watchlists, watchlistLoadState } = useWatchlists();
@@ -73,7 +74,7 @@ type ButtonProps = {
 
 const NewWatchlistButton: React.FunctionComponent<ButtonProps> = ({ onClick }) => {
 	return (
-		<Button onClick={onClick}>
+		<Button onClick={onClick} shape="square">
 			<FontAwesomeIcon className="pr-2" icon={faPlus} size="1x" />
 			<span className="text-lg">New</span>
 		</Button>
@@ -104,7 +105,7 @@ const CreateWatchlistModal: React.FunctionComponent<CreateWatchlistProps> = ({ c
 				}}
 			>
 				<input
-					className="max-w-96 mb-4 flex h-8 w-full flex-row rounded px-2 text-black sm:min-w-[288px]"
+					className="max-w-96 mb-4 flex h-8 w-full flex-row rounded bg-gray-800 px-2 focus:bg-gray-900 focus:outline-none sm:min-w-[288px]"
 					type="text"
 					value={name}
 					onChange={e => setName(e.target.value)}
@@ -122,7 +123,7 @@ const CreateWatchlistModal: React.FunctionComponent<CreateWatchlistProps> = ({ c
 						Set as default? (This will unset current default.)
 					</label>
 				</div>
-				<Button type="submit" theme="light">
+				<Button type="submit" shape="square" theme="light">
 					<FontAwesomeIcon className="pr-2" icon={faPlus} size="sm" />
 					<span className="text-md">Add</span>
 				</Button>

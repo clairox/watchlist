@@ -43,7 +43,7 @@ export const SignupPage = () => {
 
 					if (!signup || !isEmailTaken) {
 						setInvalidSignupWarning(
-							<div className="mb-4 w-full rounded bg-red-500 p-1 px-5 text-white shadow-sm ">
+							<div className="mb-4 w-full rounded bg-red-600 p-1 px-5 text-white shadow-sm ">
 								<p>Something went wrong. Please try again.</p>
 							</div>
 						);
@@ -53,12 +53,12 @@ export const SignupPage = () => {
 
 					const warningsList = [];
 
-					if (firstName.length < 2) {
-						warningsList.push(<li key="firstNameTooShort">First name should be at least 2 characters</li>);
+					if (firstName.length < 1) {
+						warningsList.push(<li key="firstNameTooShort">First name should be at least 1 character</li>);
 					}
 
-					if (lastName.length < 2) {
-						warningsList.push(<li key="lastNameTooShort">Last name should be at least 2 characters</li>);
+					if (lastName.length < 1) {
+						warningsList.push(<li key="lastNameTooShort">Last name should be at least 1 character</li>);
 					}
 
 					if (EMAIL_PATTERN.test(email)) {
@@ -76,25 +76,25 @@ export const SignupPage = () => {
 
 					//TODO: use invalid and required class
 					const warning = (
-						<div className="mb-4 w-full rounded bg-red-500 p-5 text-left text-white shadow-sm">
+						<div className="mb-4 w-full rounded bg-red-600 p-5 text-left text-white shadow-sm">
 							<p className="mb-3">The following errors must be fixed before you sign up</p>
 							<ul className="list-disc pl-6">
 								{warningsList.map(w => {
 									switch (w.key) {
 										case 'firstNameTooShort':
-											setFirstNameBCC('border-red-500');
+											setFirstNameBCC('border-2 border-red-600');
 											return w;
 										case 'lastNameTooShort':
-											setLastNameBCC('border-red-500');
+											setLastNameBCC('border-2 border-red-600');
 											return w;
 										case 'emailUnavailable':
-											setEmailBCC('border-red-500');
+											setEmailBCC('border-2 border-red-600');
 											return w;
 										case 'emailInvalid':
-											setEmailBCC('border-red-500');
+											setEmailBCC('border-2 border-red-600');
 											return w;
 										case 'passwordTooShort':
-											setPasswordBCC('border-red-500');
+											setPasswordBCC('border-2 border-red-600');
 											return w;
 										default:
 											return w;
@@ -129,7 +129,7 @@ export const SignupPage = () => {
 						<div className="mb-6 flex w-full flex-row ">
 							<div className="mr-4 grow">
 								<input
-									className={`appearance-none border-2 bg-gray-600 ${firstNameBCC} w-full rounded py-3 px-4 leading-tight text-gray-200 focus:bg-gray-500 focus:outline-none`}
+									className={`appearance-none bg-gray-800 text-white focus:bg-gray-900 ${firstNameBCC} w-full rounded py-3 px-4 leading-tight focus:outline-none`}
 									type="text"
 									name="ifirst"
 									id="ifirst"
@@ -143,7 +143,7 @@ export const SignupPage = () => {
 							</div>
 							<div className="grow">
 								<input
-									className={`appearance-none border-2 bg-gray-600 ${lastNameBCC} w-full rounded py-3 px-4 leading-tight text-gray-200 focus:bg-gray-500 focus:outline-none`}
+									className={`appearance-none bg-gray-800 text-white focus:bg-gray-900 ${lastNameBCC} w-full rounded py-3 px-4 leading-tight focus:outline-none`}
 									type="text"
 									name="ilast"
 									id="ilast"
@@ -158,7 +158,7 @@ export const SignupPage = () => {
 						</div>
 						<div className="mb-6 w-full">
 							<input
-								className={`appearance-none border-2 bg-gray-600 ${emailBCC} w-full rounded py-3 px-4 leading-tight text-gray-200 focus:bg-gray-500 focus:outline-none`}
+								className={`appearance-none bg-gray-800 text-white focus:bg-gray-900 ${emailBCC} w-full rounded py-3 px-4 leading-tight focus:outline-none`}
 								type="text"
 								name="iemail"
 								id="iemail"
@@ -172,7 +172,7 @@ export const SignupPage = () => {
 						</div>
 						<div className="mb-6 w-full">
 							<input
-								className={`appearance-none border-2 bg-gray-600 ${passwordBCC} w-full rounded py-3 px-4 leading-tight text-gray-200 focus:bg-gray-500 focus:outline-none`}
+								className={`appearance-none bg-gray-800 text-white focus:bg-gray-900 ${passwordBCC} w-full rounded py-3 px-4 leading-tight focus:outline-none`}
 								type="password"
 								name="ipassword"
 								id="ipassword"

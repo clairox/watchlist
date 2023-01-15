@@ -42,7 +42,7 @@ const WatchlistItem: React.FunctionComponent<ItemProps> = ({ data, inEditMode, d
 			{inEditMode ? (
 				<div className="flex-grow pr-1 text-right">
 					<FontAwesomeIcon
-						className="relative hover:text-red-500"
+						className="relative hover:text-red-600"
 						icon={faXmark}
 						// @ts-ignore
 						size="xl"
@@ -257,18 +257,18 @@ export const WatchlistPage: React.FunctionComponent = () => {
 						)}
 						<div className="flex flex-row justify-end gap-4">
 							{editMode ? (
-								<Button onClick={() => setEditMode(false)}>
+								<Button shape="square" onClick={() => setEditMode(false)}>
 									<FontAwesomeIcon className="pr-2" icon={faCheck} size="1x" />
 									<span className="text-lg">Finish</span>
 								</Button>
 							) : (
-								<Button level="edit" onClick={() => setEditMode(true)}>
+								<Button shape="square" level="edit" onClick={() => setEditMode(true)}>
 									<FontAwesomeIcon className="pr-2" icon={faPencil} size="1x" />
 									<span className="text-lg">Edit</span>
 								</Button>
 							)}
 							{!editMode && (
-								<Button level="danger" disabled={isDefault} onClick={openDeleteModal}>
+								<Button shape="square" level="danger" disabled={isDefault} onClick={openDeleteModal}>
 									<FontAwesomeIcon className="pr-2" icon={faTrashCan} size="1x" />
 									<span className="text-lg">Delete</span>
 								</Button>
@@ -313,10 +313,10 @@ export const WatchlistPage: React.FunctionComponent = () => {
 								Are you sure you want to delete <span className="font-bold">{name}</span>?
 							</p>
 							<div className="flex w-full flex-row justify-center gap-4">
-								<Button theme="light" level="cancel" onClick={closeDeleteModal}>
+								<Button shape="square" theme="light" level="cancel" onClick={closeDeleteModal}>
 									<span className="text-md">Cancel</span>
 								</Button>
-								<Button level="danger" theme="light" onClick={onDeleteWatchlist}>
+								<Button shape="square" level="danger" theme="light" onClick={onDeleteWatchlist}>
 									<span className="text-md">Delete</span>
 								</Button>
 							</div>
