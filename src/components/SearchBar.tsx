@@ -8,6 +8,7 @@ import { useModal } from '../hooks/useModal';
 import ModalWrapper from './ModalWrapper';
 import Button from './Button';
 import { useWatchlists } from '../context/watchlistContext';
+import noImage from '../assets/no-image.png';
 
 //////////////////////////////
 // Search Bar
@@ -109,7 +110,7 @@ export const SearchBar: React.FunctionComponent<SearchProps> = ({ searchBarOpen,
 					/>
 				</div>
 			</div>
-			<div className="ml-4 flex w-full justify-center sm:mx-10" id="search-bar">
+			<div className="ml-4 flex w-full justify-center sm:mx-10" id="search-bar-container">
 				<form
 					className="w-full w-full sm:max-w-md lg:max-w-full xl:max-w-2xl "
 					id="search-form"
@@ -117,7 +118,7 @@ export const SearchBar: React.FunctionComponent<SearchProps> = ({ searchBarOpen,
 					onSubmit={e => e.preventDefault()}
 				>
 					<input
-						className={`mt-[15px] w-full appearance-none rounded bg-gray-800 py-[7px] px-3 leading-tight text-gray-100 focus:outline-none ${
+						className={`mt-[15px] w-full appearance-none rounded bg-gray-800 py-[7px] px-3 leading-tight text-gray-100 focus:bg-gray-900 focus:outline-none ${
 							searchBarOpen ? '' : 'hidden'
 						} sm:inline-block`}
 						id="search-bar"
@@ -237,9 +238,7 @@ const ResultsItem: React.FunctionComponent<ResultItemProps> = ({ openAddToListMo
 								alt="movie poster"
 							/>
 						) : (
-							<div className="flex h-full w-full items-center justify-center bg-gray-200">
-								<p className="px-2 text-3xl font-bold text-gray-600">No Image</p>
-							</div>
+							<img src={noImage} width="140px" alt="movie poster" />
 						)}
 					</div>
 					<div className="flex flex-col justify-start pl-6 text-left">
@@ -266,7 +265,9 @@ const ResultsItem: React.FunctionComponent<ResultItemProps> = ({ openAddToListMo
 									openAddToListModal({
 										id,
 										title,
-										poster_url: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${poster_path}`,
+										poster_url: poster_path
+											? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${poster_path}`
+											: '',
 										release_date: release_date.slice(0, 4) || null,
 									});
 									closeResults();
@@ -327,15 +328,13 @@ const AddToListModal: React.FunctionComponent<ModalProps> = ({ data, closeModal 
 						alt="movie poster"
 					/>
 				) : (
-					<div className="flex h-full w-full items-center justify-center bg-gray-200">
-						<p className="px-2 text-3xl font-bold text-gray-600">No Image</p>
-					</div>
+					<img src={noImage} width="140px" alt="movie poster" />
 				)}
 				<form className="relative bottom-[6px] flex flex-col items-start" onSubmit={onAddToListFormSubmit}>
 					<h3 className="mb-4 w-fit text-2xl font-bold line-clamp-2">{data.title}</h3>
 					<p className="mb-4 ">Choose a list to add to</p>
 					<select
-						className="max-w-96 mb-8 flex h-8 w-full flex-row rounded px-2 text-black sm:min-w-[288px]"
+						className="max-w-96 mb-8 flex h-8 w-full flex-row rounded bg-gray-800 px-2 text-white text-black focus:outline-none sm:min-w-[288px]"
 						id="lists"
 						name="lists"
 						ref={listSelect}
@@ -351,7 +350,7 @@ const AddToListModal: React.FunctionComponent<ModalProps> = ({ data, closeModal 
 						<option value={'new'}>+ New watchlist</option>
 					</select>
 					<div className="">
-						<Button type="submit" theme="light">
+						<Button type="submit" shape="square" theme="light">
 							<FontAwesomeIcon className="pr-2" icon={faPlus} size="sm" />
 							<span className="text-md">Add</span>
 						</Button>
