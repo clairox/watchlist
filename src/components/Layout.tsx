@@ -40,7 +40,7 @@ export const Layout: React.FunctionComponent<Props> = ({ searchBarOpen, setSearc
 				<div>
 					<Navbar {...{ menuButton, setSideMenuOpen, searchBarOpen, setSearchBarOpen }} />
 				</div>
-				<div className="px-4 pt-20">
+				<div className="pt-20">
 					<Outlet />
 				</div>
 			</div>

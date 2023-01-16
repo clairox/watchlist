@@ -43,7 +43,7 @@ const Watchlists: React.FunctionComponent<WatchlistProps> = ({ setSearchBarOpen 
 		} else {
 			setContent(
 				<div>
-					<div className="flex w-full justify-end gap-4">
+					<div className="flex w-full justify-end gap-4 pr-4">
 						<NewWatchlistButton onClick={openCreateModal} />
 					</div>
 					<ul>
