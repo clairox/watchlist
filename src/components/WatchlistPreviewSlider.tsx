@@ -304,11 +304,13 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 	}, [numberOfItemSections, watchlistItems, watchlistName, calculateWindowWidth]);
 
 	useEffect(() => {
-		const items = watchlists?.find(l => l.id === watchlistId)?.items?.slice(0, MAX_ITEM_COUNT);
+		const items = watchlists?.find(l => l.id === watchlistId)?.items;
 		if (!items) return;
 
+		const slicedItems = items.slice(0, MAX_ITEM_COUNT);
+
 		setWatchlistItems(
-			items?.map((item: any, i: number) => {
+			slicedItems?.map((item: any, i: number) => {
 				const newItem = {
 					...item,
 					sliderItemId: 'slider-item-' + (i < numberOfItemSections ? i : ''),
