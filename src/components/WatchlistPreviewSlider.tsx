@@ -63,7 +63,6 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data, 
 
 	const MAX_ITEM_COUNT = 30;
 
-	//TODO: mobile scroll doesn't always work immediately bc stuff has to load
 	const onMouseEnterSlider = () => {
 		if (deviceType !== 'computer') return;
 		setMoveLeftHTML(

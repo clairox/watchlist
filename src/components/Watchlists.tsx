@@ -56,8 +56,6 @@ const Watchlists: React.FunctionComponent<WatchlistProps> = ({ setSearchBarOpen 
 		}
 	}, [watchlists, watchlistLoadState, openCreateModal, setSearchBarOpen]);
 
-	//TODO: make watchlist image column which is equal to the most recently added poster or a custom image
-
 	return (
 		<div>
 			{content}

@@ -32,7 +32,6 @@ export const Layout: React.FunctionComponent<Props> = ({ searchBarOpen, setSearc
 		};
 	}, []);
 
-	//TODO: clicking off dialog window shouldn't click other things
 	return (
 		<div>
 			<div>

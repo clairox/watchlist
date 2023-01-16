@@ -18,6 +18,8 @@ type ItemProps = {
 	setWatched: (itemId: number, watched: boolean) => void;
 };
 
+//TODO: make watched/unwatched switch button so you don't have to scroll all the way to the bottom to see watched
+
 const WatchlistItem: React.FunctionComponent<ItemProps> = ({ data, inEditMode, deleteItem, setWatched }) => {
 	const { title, poster_url, release_date, watched } = data;
 

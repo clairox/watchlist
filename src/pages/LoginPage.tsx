@@ -27,7 +27,6 @@ export const LoginPage = () => {
 		}
 	}, [user, navigate, from]);
 
-	// form pt-10 pb-8s
 	return (
 		<div className="mx-auto min-h-screen w-full lg:max-w-md lg:py-24">
 			<Helmet>

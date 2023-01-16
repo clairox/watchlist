@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { SearchBar } from './SearchBar';
 import { useWatchlists } from '../context/watchlistContext';
 
-//TODO: clear localstorage and reload on logout
 type Props = {
 	menuButton: MutableRefObject<HTMLDivElement | null>;
 	setSideMenuOpen: Dispatch<SetStateAction<boolean>>;
