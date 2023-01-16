@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
+import React, { MutableRefObject, useCallback, useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
 import { faAngleLeft, faAngleRight, faLock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { cloneDeep } from 'lodash';
 import { Watchlist, WatchlistItem } from '../../types';
 import { useWatchlists } from '../context/watchlistContext';
 import add from '../assets/add.png';
+import MobileDetect from 'mobile-detect';
 
 type SliderItem = WatchlistItem & {
 	sliderItemId?: string;
@@ -18,9 +19,10 @@ type SliderItem = WatchlistItem & {
 
 type Slider = {
 	data: Watchlist;
+	setSearchBarOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }) => {
+export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data, setSearchBarOpen }) => {
 	const { watchlists } = useWatchlists();
 
 	const [watchlistItems, setWatchlistItems] = useState<SliderItem[]>([]);
@@ -28,6 +30,9 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 	const [moveLeftHTML, setMoveLeftHTML] = useState(<></>);
 	const [moveRightHTML, setMoveRightHTML] = useState(<></>);
 	const [moving, setMoving] = useState(false);
+
+	type DeviceType = 'computer' | 'mobile' | '';
+	const [deviceType, setDeviceType] = useState<DeviceType>('');
 
 	const watchlistId = data.id;
 	const watchlistName = data.name;
@@ -58,13 +63,9 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 
 	const MAX_ITEM_COUNT = 30;
 
-	let touchStarted = false;
-	let touchEnded = false;
-
 	//TODO: mobile scroll doesn't always work immediately bc stuff has to load
 	const onMouseEnterSlider = () => {
-		if (touchStarted) return (touchStarted = false);
-
+		if (deviceType !== 'computer') return;
 		setMoveLeftHTML(
 			<span className="absolute left-0 z-10 flex h-full w-8 items-center justify-center bg-gradient-to-r from-black to-transparent hover:cursor-pointer">
 				<FontAwesomeIcon size="lg" icon={faAngleLeft} color="white" />
@@ -78,8 +79,6 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 	};
 
 	const onMouseLeaveSlider = () => {
-		if (touchEnded) return (touchEnded = false);
-
 		setMoveLeftHTML(<></>);
 		setMoveRightHTML(<></>);
 	};
@@ -263,6 +262,46 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 		if (!watchlistItems.length) {
 			return;
 		}
+
+		const getDeviceType = () => {
+			let hasTouchScreen = false;
+			if ('maxTouchPoints' in navigator) {
+				hasTouchScreen = navigator.maxTouchPoints > 0;
+			} else if ('msMaxTouchPoints' in navigator) {
+				hasTouchScreen = navigator['msMaxTouchPoints'] > 0;
+			} else {
+				let mQ = matchMedia('(pointer:coarse)');
+				if (mQ && mQ.media === '(pointer:coarse)') {
+					hasTouchScreen = !!mQ.matches;
+				} else if ('orientation' in window) {
+					hasTouchScreen = true;
+				}
+			}
+
+			const md = new MobileDetect(window.navigator.userAgent);
+			const isMobileDetected = md.mobile() || md.phone() || md.tablet();
+
+			if (hasTouchScreen || isMobileDetected) {
+				setWatchlistItems(
+					watchlistItems.map((item, i) => {
+						return {
+							...item,
+							sliderItemId: 'slider-item-' + i,
+							hidden: false,
+						};
+					})
+				);
+
+				return 'mobile';
+			} else {
+				return 'computer';
+			}
+		};
+
+		if (deviceType === '') {
+			setDeviceType(getDeviceType());
+		}
+
 		const changeElementIdsByVisibility = (newSections: WindowWidth) => {
 			const newItems = cloneDeep(watchlistItems);
 			let startIndex = 0;
@@ -274,6 +313,7 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 				itemsLeft = watchlistItems.length - siIndex;
 				startIndex = itemsLeft >= newSections ? siIndex : newItems.length - newSections;
 			}
+			if (getDeviceType() !== 'computer') return;
 
 			for (let i = 0; i < newItems.length; i++) {
 				newItems[i].sliderItemId = 'slider-item-';
@@ -301,14 +341,13 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 		};
 
 		window.addEventListener('resize', onResize);
-	}, [numberOfItemSections, watchlistItems, watchlistName, calculateWindowWidth]);
+	}, [numberOfItemSections, watchlistItems, watchlistName, calculateWindowWidth, deviceType]);
 
 	useEffect(() => {
 		const items = watchlists?.find(l => l.id === watchlistId)?.items;
-		if (!items) return;
+		if (!items || deviceType === 'mobile') return;
 
 		const slicedItems = items.slice(0, MAX_ITEM_COUNT);
-
 		setWatchlistItems(
 			slicedItems?.map((item: any, i: number) => {
 				const newItem = {
@@ -322,7 +361,7 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 		);
 
 		setCount(items.length);
-	}, [numberOfItemSections, watchlistId, watchlists]);
+	}, [numberOfItemSections, watchlistId, watchlists, deviceType]);
 
 	return (
 		<div className="mb-4">
@@ -341,23 +380,6 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 			</div>
 			<div
 				className="slider relative z-0 select-none"
-				onTouchStart={e => {
-					touchStarted = true;
-
-					setWatchlistItems(
-						watchlistItems.map((item, i) => {
-							return {
-								...item,
-								sliderItemId: 'slider-item-' + i,
-								hidden: false,
-							};
-						})
-					);
-				}}
-				onTouchEnd={e => {
-					e.preventDefault();
-					touchEnded = true;
-				}}
 				onMouseEnter={onMouseEnterSlider}
 				onMouseLeave={onMouseLeaveSlider}
 			>
@@ -379,15 +401,17 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data }
 					</>
 				) : (
 					<div className="text-left">
-						<li
-							className="inline-block flex w-[25%] items-center justify-center bg-transparent px-1 text-white opacity-50 hover:cursor-pointer hover:opacity-100 md:w-[16.6666666%] lg:w-[14.2857143%] xl:w-[11.1111111%] 2xl:w-[10%]"
-							onClick={() => {
-								const searchBar = document.getElementById('search-bar') as HTMLInputElement;
-
-								searchBar?.focus();
-							}}
-						>
-							<img className="w-fit rounded-lg" src={add} alt="movie poster" />
+						<li className="inline-block flex w-[25%] items-center justify-center bg-transparent px-1 text-white  md:w-[16.6666666%] lg:w-[14.2857143%] xl:w-[11.1111111%] 2xl:w-[10%]">
+							<img
+								className="w-fit rounded-lg opacity-50 hover:cursor-pointer hover:opacity-100"
+								src={add}
+								alt="movie poster"
+								onClick={async () => {
+									const searchBar = document.getElementById('search-bar') as HTMLInputElement;
+									await setSearchBarOpen(true);
+									searchBar?.focus();
+								}}
+							/>
 						</li>
 					</div>
 				)}
