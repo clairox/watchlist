@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router';
 import Button from '../components/Button';
 import ModalWrapper from '../components/ModalWrapper';
@@ -131,7 +132,10 @@ export const SettingsPage: React.FunctionComponent = () => {
 	};
 
 	return (
-		<div className="mt-10 flex w-full justify-center">
+		<div className="mt-10 flex w-full justify-center px-4 sm:p-0">
+			<Helmet>
+				<title>Settings</title>
+			</Helmet>
 			<div className="w-[600px] text-white">
 				<h2 className="mb-4 text-3xl font-bold">Account</h2>
 				<div className="flex flex-col gap-4">

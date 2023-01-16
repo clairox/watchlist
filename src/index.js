@@ -18,4 +18,3 @@ root.render(
 );
 
 //TODO: change favicon
-//TODO: add titles for each page
