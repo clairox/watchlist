@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { WatchlistWithItems } from '../../types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +11,11 @@ import { useWatchlists } from '../context/watchlistContext';
 //TODO: add local watchlists to db on sign in
 //TODO: add set default in edit mode
 
-const Watchlists = () => {
+type WatchlistProps = {
+	setSearchBarOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+const Watchlists: React.FunctionComponent<WatchlistProps> = ({ setSearchBarOpen }) => {
 	const { watchlists, watchlistLoadState } = useWatchlists();
 
 	const [content, setContent] = useState(<></>);
@@ -44,13 +48,13 @@ const Watchlists = () => {
 					</div>
 					<ul>
 						{watchlists.map((data: WatchlistWithItems, i) => (
-							<WatchlistPreviewSlider data={data} key={data.id} />
+							<WatchlistPreviewSlider data={data} key={data.id} {...{ setSearchBarOpen }} />
 						))}
 					</ul>
 				</div>
 			);
 		}
-	}, [watchlists, watchlistLoadState, openCreateModal]);
+	}, [watchlists, watchlistLoadState, openCreateModal, setSearchBarOpen]);
 
 	//TODO: make watchlist image column which is equal to the most recently added poster or a custom image
 

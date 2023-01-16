@@ -1,5 +1,5 @@
 import './assets/App.css';
-import React from 'react';
+import React, { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { LoginPage } from './pages/LoginPage';
 import { HomePage } from './pages/HomePage';
@@ -11,11 +11,12 @@ import { ErrorPage } from './pages/ErrorPage';
 import { SettingsPage } from './pages/SettingsPage';
 
 function App() {
+	const [searchBarOpen, setSearchBarOpen] = useState(false);
 	return (
 		<div className="App min-h-screen bg-gray-800 pb-20">
 			<Routes>
-				<Route element={<Layout />}>
-					<Route index element={<HomePage />} />
+				<Route element={<Layout {...{ searchBarOpen, setSearchBarOpen }} />}>
+					<Route index element={<HomePage {...{ setSearchBarOpen }} />} />
 					<Route path="/lists/:id" element={<WatchlistPage />} />
 					<Route element={<PrivateRoute />}>
 						<Route path="/settings" element={<SettingsPage />} />

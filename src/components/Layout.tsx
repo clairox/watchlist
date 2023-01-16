@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useRef, useState } from 'react';
+import React, { MutableRefObject, useRef, useState, Dispatch, SetStateAction } from 'react';
 import { Outlet } from 'react-router';
 import { Navbar } from './Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,7 +6,12 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 
-export const Layout: React.FunctionComponent = () => {
+type Props = {
+	searchBarOpen: boolean;
+	setSearchBarOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export const Layout: React.FunctionComponent<Props> = ({ searchBarOpen, setSearchBarOpen }) => {
 	const [sideMenuOpen, setSideMenuOpen] = useState(false);
 
 	const sideMenu: MutableRefObject<HTMLDivElement | null> = useRef(null);
@@ -31,11 +36,9 @@ export const Layout: React.FunctionComponent = () => {
 	return (
 		<div>
 			<div>
-				{sideMenuOpen && (
-					<div className="fixed z-50 h-full w-full bg-black opacity-30 lg:hidden" />
-				)}
+				{sideMenuOpen && <div className="fixed z-50 h-full w-full bg-black opacity-30 lg:hidden" />}
 				<div>
-					<Navbar menuButton={menuButton} setSideMenuOpen={setSideMenuOpen} />
+					<Navbar {...{ menuButton, setSideMenuOpen, searchBarOpen, setSearchBarOpen }} />
 				</div>
 				<div className="px-4 pt-20">
 					<Outlet />

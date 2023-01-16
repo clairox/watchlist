@@ -11,10 +11,16 @@ import { useWatchlists } from '../context/watchlistContext';
 type Props = {
 	menuButton: MutableRefObject<HTMLDivElement | null>;
 	setSideMenuOpen: Dispatch<SetStateAction<boolean>>;
+	searchBarOpen: boolean;
+	setSearchBarOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-export const Navbar: React.FunctionComponent<Props> = ({ menuButton, setSideMenuOpen }) => {
-	const [searchBarOpen, setSearchBarOpen] = useState(false);
+export const Navbar: React.FunctionComponent<Props> = ({
+	menuButton,
+	setSideMenuOpen,
+	searchBarOpen,
+	setSearchBarOpen,
+}) => {
 	const [userMenuOpen, setUserMenuOpen] = useState(false);
 
 	const { user, logout } = useAuth();
