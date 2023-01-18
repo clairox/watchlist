@@ -344,17 +344,17 @@ export const WatchlistPreviewSlider: React.FunctionComponent<Slider> = ({ data, 
 
 	useEffect(() => {
 		const items = watchlists?.find(l => l.id === watchlistId)?.items;
-		if (!items || deviceType === 'mobile') return;
+		if (!items) return;
 
 		const slicedItems = items.slice(0, MAX_ITEM_COUNT);
 		setWatchlistItems(
 			slicedItems?.map((item: any, i: number) => {
 				const newItem = {
 					...item,
-					sliderItemId: 'slider-item-' + (i < numberOfItemSections ? i : ''),
+					sliderItemId: 'slider-item-' + (deviceType !== 'mobile' ? (i < numberOfItemSections ? i : '') : i),
 				};
 
-				newItem.hidden = !isDisplayableItem(newItem);
+				newItem.hidden = deviceType !== 'mobile' ? !isDisplayableItem(newItem) : false;
 				return newItem;
 			})
 		);
