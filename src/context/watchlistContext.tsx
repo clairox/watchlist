@@ -105,8 +105,7 @@ const useProvideWatchlists = () => {
 	const setLocalWatchlists = (data: WatchlistWithItems[]) => localStorage.setItem('watchlists', JSON.stringify(data));
 
 	const createWatchlist = async (name: string, isDefault: boolean): Promise<WatchlistWithItems | null> => {
-		if (loadState === 'loading') return null;
-		setLoadState('loading');
+		if (loadState !== 'succeeded') return null;
 
 		name = name || 'New watchlist';
 
@@ -132,7 +131,6 @@ const useProvideWatchlists = () => {
 
 			setLocalWatchlists([...getLocalWatchlists(), newWatchlist]);
 			setWatchlists(getLocalWatchlists());
-			setLoadState('succeeded');
 			return newWatchlist;
 		} else {
 			// If user is creating new default watchlist, remove default status from current default watchlist
@@ -151,7 +149,6 @@ const useProvideWatchlists = () => {
 								throw new Error(err.message);
 							});
 					} catch {
-						setLoadState('succeeded');
 						return null;
 					}
 				}
@@ -170,25 +167,21 @@ const useProvideWatchlists = () => {
 				.then(async res => {
 					const newWatchlist = res.data;
 					setWatchlists(await getServerWatchlists());
-					setLoadState('succeeded');
 					return newWatchlist;
 				})
 				.catch(() => {
-					setLoadState('succeeded');
 					return null;
 				});
 		}
 	};
 
 	const updateWatchlistName = async (id: string, name: string): Promise<WatchlistWithItems | null> => {
-		if (loadState === 'loading') return null;
-		setLoadState('loading');
+		if (loadState !== 'succeeded') return null;
 
 		if (!user) {
 			const list = await getWatchlist(id);
 			const rest = getLocalWatchlists().filter(l => l.id !== id);
 			if (!list) {
-				setLoadState('succeeded');
 				return null;
 			}
 
@@ -199,7 +192,6 @@ const useProvideWatchlists = () => {
 
 			setLocalWatchlists([...rest, newList]);
 			setWatchlists(getLocalWatchlists());
-			setLoadState('succeeded');
 
 			return newList;
 		} else {
@@ -208,34 +200,27 @@ const useProvideWatchlists = () => {
 				.then(async res => {
 					const updatedWatchlist = res.data;
 					setWatchlists(await getServerWatchlists());
-					setLoadState('succeeded');
 					return updatedWatchlist;
 				})
 				.catch(() => {
-					setLoadState('succeeded');
 					return null;
 				});
 		}
 	};
 
 	const deleteWatchlist = (id: string): void => {
-		if (loadState === 'loading') return;
-		setLoadState('loading');
+		if (loadState !== 'succeeded') return;
 
 		if (!user) {
 			setLocalWatchlists(getLocalWatchlists().filter(l => l.id !== id));
 			setWatchlists(getLocalWatchlists());
-			setLoadState('succeeded');
 		} else {
 			axios
 				.delete(`/watchlists/${id}`, reqConfig)
 				.then(async () => {
 					setWatchlists(await getServerWatchlists());
-					setLoadState('succeeded');
 				})
-				.catch(() => {
-					setLoadState('succeeded');
-				});
+				.catch(() => {});
 		}
 	};
 
@@ -243,14 +228,12 @@ const useProvideWatchlists = () => {
 		watchlistId: string,
 		data: Omit<WatchlistItem, 'watchlist_id' | 'createdAt' | 'watched'>
 	): Promise<void> => {
-		if (loadState === 'loading') return;
-		setLoadState('loading');
+		if (loadState !== 'succeeded') return;
 
 		if (!user) {
 			const list = await getWatchlist(watchlistId);
 			const rest = getLocalWatchlists().filter(l => l.id !== watchlistId);
 			if (!list) {
-				setLoadState('succeeded');
 				return;
 			}
 
@@ -263,7 +246,6 @@ const useProvideWatchlists = () => {
 
 			setLocalWatchlists([...rest, list]);
 			setWatchlists(getLocalWatchlists());
-			setLoadState('succeeded');
 		} else {
 			axios
 				.put(
@@ -278,23 +260,18 @@ const useProvideWatchlists = () => {
 				)
 				.then(async () => {
 					setWatchlists(await getServerWatchlists());
-					setLoadState('succeeded');
 				})
-				.catch(() => {
-					setLoadState('succeeded');
-				});
+				.catch(() => {});
 		}
 	};
 
 	const setItemWatched = async (watchlistId: string, itemId: number, watched: boolean): Promise<void> => {
-		if (loadState === 'loading') return;
-		setLoadState('loading');
+		if (loadState !== 'succeeded') return;
 
 		if (!user) {
 			const list = await getWatchlist(watchlistId);
 			const rest = getLocalWatchlists().filter(l => l.id !== watchlistId);
 			if (!list) {
-				setLoadState('succeeded');
 				return;
 			}
 
@@ -310,25 +287,20 @@ const useProvideWatchlists = () => {
 
 			setLocalWatchlists([...rest, list]);
 			setWatchlists(getLocalWatchlists());
-			setLoadState('succeeded');
 		} else {
 			axios
 				.patch(`/watchlists/${watchlistId}/items/${itemId}/watched`, { watched }, reqConfig)
 				.then(async () => {
 					setWatchlists(await getServerWatchlists());
-					setLoadState('succeeded');
 				})
-				.catch(() => {
-					setLoadState('succeeded');
-				});
+				.catch(() => {});
 		}
 	};
 
 	const deleteItem = async (watchlistId: string, itemId: number): Promise<void> => {
-		if (!user) {
-			if (loadState === 'loading') return;
-			setLoadState('loading');
+		if (loadState !== 'succeeded') return;
 
+		if (!user) {
 			const list = await getWatchlist(watchlistId);
 			const rest = getLocalWatchlists().filter(l => l.id !== watchlistId);
 			if (!list) {
